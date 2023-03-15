@@ -1,0 +1,41 @@
+// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-License-Identifier: MIT
+
+export component StateArea {
+    private property <bool> animate-state;
+    private property <duration> animation: 4s;
+    private property <length> shadow-offset: animate-state ? 4px * abs(sin(360deg * animation-tick() / animation)) : 0;
+    private property <float> state-opacity: animate-state ?  abs(sin(360deg * animation-tick() / animation)) : 0;
+
+    callback clicked <=> i-touch-area.clicked;
+
+    in property <length> border-radius <=> i-container.border-radius;
+    in property <bool> has-focus;
+
+    i-shadow := Rectangle {
+        x: -shadow-offset;
+        y: -shadow-offset;
+        width: parent.width + 2 * shadow-offset;
+        height: parent.height + 2 * shadow-offset;
+        border-radius: root.border-radius + shadow-offset;
+        border-width: shadow-offset - 1px;
+        opacity: state-opacity;
+    }
+
+    i-container := Rectangle {
+        border-width: 2px;
+        opacity: state-opacity;
+    }
+
+    i-touch-area := TouchArea {}
+
+    states [
+        focus when root.has-focus : {
+            i-container.border-color: #32edff;
+            i-container.background: #32edff80;
+            i-container.drop-shadow-color: #32edff80;
+            i-shadow.border-color: #32edff80;
+            animate-state: true;
+        }
+    ]
+}

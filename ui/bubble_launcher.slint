@@ -1,0 +1,239 @@
+// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-License-Identifier: MIT
+
+import { Theme } from "theme.slint";
+import { StateArea } from "state_area.slint";
+
+component BubbleItem {
+    callback clicked <=> i-state-area.clicked;
+
+    in property <string> text <=> i-text.text;
+    in property <image> icon <=> i-image.source;
+    in property <bool> has-focus <=> i-state-area.has-focus;
+    in property <bool> filler;
+
+    width: Theme.sizes.bubble;
+    height: Theme.sizes.bubble;
+
+    i-container := Rectangle {
+        visible: !root.filler;
+        clip: true;
+        border-radius: max(self.width, self.height) / 2;
+        background: blue;
+
+        i-image := Image {
+            width: 100%;
+            height: 100%;
+            image-fit: fill;
+        }
+    }
+
+    i-text := Text {
+        color: white;
+        horizontal-alignment: center;
+        y: root.height;
+    }
+
+    i-state-area := StateArea {
+        border-radius: i-container.border-radius;
+    }
+}
+
+export struct Bubble {
+    title: string,
+    icon: image,
+    row: int,
+    column: int,
+    filler: bool,
+}
+
+export struct BubblePage {
+    bubbles: [Bubble]
+}
+
+export component BubblePageItem {
+    private property <int> even-columns: 3;
+    private property <int> odd-columns: 4;
+    private property <int> rows: 3;
+    private property <length> even-x:
+        (root.width - even-columns * Theme.sizes.bubble - ((even-columns - 1) * root.hor-spacing)) / 2;
+    private property <length> odd-x:
+    (root.width - odd-columns * Theme.sizes.bubble - ((odd-columns - 1) * root.hor-spacing)) / 2;
+    private property <length> start-y:
+        (root.height - rows * Theme.sizes.bubble - ((rows - 1) * root.ver-spacing)) / 2;
+
+    callback item-clicked(string /* index */);
+
+    in property <[Bubble]> model;
+    in property <length> ver-spacing: Theme.spacings.small;
+    in property <length> hor-spacing: Theme.sizes.bubble / 2;
+    in property <int> focus-row: -1;
+    in property <int> focus-column: -1;
+
+    for bubble[index] in model : BubbleItem {
+        text: bubble.title;
+        icon: bubble.icon;
+        x: bubble-x(bubble.row, bubble.column);
+        y: bubble-y(bubble.row);
+        filler: bubble.filler;
+        has-focus: bubble.row == root.focus-row && bubble.column == root.focus-column;
+
+        clicked => {
+            item-clicked(bubble.title);
+        }
+    }
+
+    function bubble-x(row: int, column: int) -> length {
+        if(row == 0 || row == 2) {
+            return even-x + mod(column, even-columns) * (Theme.sizes.bubble + root.hor-spacing);
+        }
+
+        odd-x + mod(column, odd-columns) * (Theme.sizes.bubble + root.hor-spacing)
+    }
+
+    function bubble-y(row: int) -> length {
+        root.start-y +
+            (row == 0 ? 0px : row == 1 ? Theme.sizes.bubble + root.ver-spacing : 2 * (Theme.sizes.bubble + root.ver-spacing))
+    }
+}
+
+export component BubbleLauncher {
+    callback page-right() -> bool;
+    callback open-item(string /* key */);
+
+    private property <int> focus-row: -1;
+    private property <int> focus-column: -1;
+
+    in property <[BubblePage]> model;
+    out property <float> selected-page: -round(i-flickable.viewport-y / i-flickable.height);
+
+    horizontal-stretch: 1;
+    forward-focus: i-focus-scope;
+
+    i-flickable := Flickable {
+        VerticalLayout {
+            for page[index] in model : BubblePageItem {
+                width: 100%;
+                height: root.height;
+                model: page.bubbles;
+                focus-row: index == selected-page ? focus-row : -1;
+                focus-column: index == selected-page ? focus-column : -1;
+
+                item-clicked(id) => {
+                    root.open-item(id);
+                }
+            }
+        }
+
+        animate viewport-y { duration: Theme.animations.fast;  }
+    }
+
+    i-focus-scope := FocusScope {
+        width: 0px;
+
+        key-pressed(e) => {
+            if(e.text == Key.UpArrow) {
+                root.focus-up();
+                return accept;
+            }
+            if(e.text == Key.DownArrow) {
+                root.focus-down();
+                return accept;
+            }
+            if(e.text == Key.RightArrow) {
+                root.focus-right();
+                return accept;
+            }
+            if(e.text == Key.LeftArrow) {
+                root.focus-left();
+                return accept;
+            }
+
+            reject
+        }
+    }
+
+    public function focus-first() {
+        root.focus-row = 0;
+        root.focus-column = 0;
+        i-focus-scope.focus();
+    }
+
+    public function show-page(index: int) {
+        if(index < 0 || index >= model.length) {
+            return;
+        }
+
+        i-flickable.viewport-y = -index * root.height;
+    }
+
+    public function remove-focus() {
+        self.focus-column = -1;
+        self.focus-row = -1;
+    }
+
+    function focus-up() {
+        if(root.focus-row == 0 && root.selected-page == 0) {
+            return;
+        }
+
+        if(root.focus-row == 0) {
+            show-page(root.selected-page - 1);
+            root.focus-row = 2;
+            return;
+        }
+
+        root.focus-row -= 1;
+
+        if(root.focus-column < 0) {
+            root.focus-column = 0;
+        }
+
+        if(root.focus-column == 3) {
+            root.focus-column = 2;
+        }
+    }
+
+    function focus-down() {
+        if(root.focus-row == 2 && root.selected-page == model.length - 1) {
+            return;
+        }
+
+        if(root.focus-row == 2) {
+            show-page(root.selected-page + 1);
+            root.focus-row = 0;
+            return;
+        }
+
+        root.focus-row += 1;
+
+        if(root.focus-column < 0) {
+            root.focus-column = 0;
+        }
+
+        if(root.focus-column == 3) {
+            root.focus-column = 2;
+        }
+    }
+
+    function focus-right() {
+        if((root.focus-column == 2 && mod(root.focus-row, 2) == 0)
+            || (root.focus-column == 3 && mod(root.focus-row, 2) == 1)) {
+            if(root.page-right()) {
+                root.remove-focus();
+            }
+
+            return;
+        }
+
+        root.focus-column += 1;
+    }
+
+    function focus-left() {
+        if(root.focus-column == 0) {
+            return;
+        }
+
+        root.focus-column -= 1;
+    }
+}
