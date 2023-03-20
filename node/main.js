@@ -1,6 +1,6 @@
 
 
-let slint = require("slint-ui");
+
 let bc = require("./bubble.controller.js");
 let bs = require("./bubble.service.js");
 
