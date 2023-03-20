@@ -9,7 +9,7 @@ export component StateArea {
 
     callback clicked <=> i-touch-area.clicked;
 
-    in property <length> border-radius <=> i-container.border-radius;
+    in property <length> border-radius;
     in property <bool> has-focus;
 
     i-shadow := Rectangle {
@@ -25,6 +25,7 @@ export component StateArea {
     i-container := Rectangle {
         border-width: 2px;
         opacity: state-opacity;
+        border-radius: root.border-radius;
     }
 
     i-touch-area := TouchArea {}

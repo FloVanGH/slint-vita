@@ -41,7 +41,7 @@ component BubbleItem {
 
 export struct Bubble {
     title: string,
-    icon: image,
+    // icon: image,
     row: int,
     column: int,
     filler: bool,
@@ -72,7 +72,7 @@ export component BubblePageItem {
 
     for bubble[index] in model : BubbleItem {
         text: bubble.title;
-        icon: bubble.icon;
+        // icon: bubble.icon;
         x: bubble-x(bubble.row, bubble.column);
         y: bubble-y(bubble.row);
         filler: bubble.filler;
@@ -104,7 +104,7 @@ export component BubbleLauncher {
     private property <int> focus-row: -1;
     private property <int> focus-column: -1;
 
-    in property <[BubblePage]> model;
+    in property <[[Bubble]]> model;
     out property <float> selected-page: -round(i-flickable.viewport-y / i-flickable.height);
 
     horizontal-stretch: 1;
@@ -115,7 +115,7 @@ export component BubbleLauncher {
             for page[index] in model : BubblePageItem {
                 width: 100%;
                 height: root.height;
-                model: page.bubbles;
+                model: page;
                 focus-row: index == selected-page ? focus-row : -1;
                 focus-column: index == selected-page ? focus-column : -1;
 
