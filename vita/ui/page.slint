@@ -1,0 +1,31 @@
+// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-License-Identifier: MIT
+
+import { Theme } from "theme.slint";
+
+export struct Page {
+    title: string,
+    color: brush
+}
+
+export component PageItem {
+    in property <string> title;
+    in property <brush> background: red;
+
+    i-container := Rectangle {
+        x: Theme.spacings.extra-large;
+        y: Theme.spacings.large;
+        width: root.width - 2 * Theme.spacings.extra-large;
+        height: root.height - Theme.spacings.large;
+        background: root.background;
+
+        HorizontalLayout {
+            padding: Theme.spacings.medium;
+
+            Text {
+                color: white;
+                text: root.title;
+            }
+        }
+    }
+}
