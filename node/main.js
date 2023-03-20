@@ -1,12 +1,13 @@
 
 
 let slint = require("slint-ui");
-let bubble = require("./bubble.controller.js");
+let bc = require("./bubble.controller.js");
+let bs = require("./bubble.service.js");
 
 let vita = require("../ui/appwindow.slint");
 
 let mainWindow = new vita.AppWindow();
 
-let bubbleController = new bubble.BubbleController(mainWindow);
+let bubbleController = new bc.BubbleController(new bs.BubbleService(), mainWindow);
 
 mainWindow.run();

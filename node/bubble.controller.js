@@ -1,7 +1,7 @@
 
 class BubbleController {
-    constructor(window) {
-
+    constructor(service, window) {
+        this.service = service;
     }
 }
 
