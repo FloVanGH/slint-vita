@@ -26,7 +26,7 @@ class BubbleService {
     }
 
     get bubbles() {
-        return [[new Bubble("Minetest", 0, 0, false, undefined), new Bubble("Trophies", 0, 1, false, undefined)], []];
+        return [[new Bubble("Minetest", 0, 0, false, "minetest.png"), new Bubble("Trophies", 0, 1, false, "minetest.png")], []];
     }
 }
 
