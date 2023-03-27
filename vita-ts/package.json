@@ -10,9 +10,12 @@
   "keywords": [],
   "author": "",
   "dependencies": {
-    "node-ui": "file:../node-ui"
+    "dotenv": "^16.0.3",
+    "node-ui": "file:../node-ui",
+    "psn-api": "^2.9.0"
   },
   "devDependencies": {
+    "@types/node": "^18.15.10",
     "typescript": "^5.0.2"
   }
 }

@@ -4,9 +4,32 @@ import { PageController } from "./controllers/page_controller";
 import { BubbleService } from "./services/bubble_service";
 import { PageService } from "./services/page_service";
 
-let window = new AppWindow();
+import * as psn from "psn-api";
 
-let bubbleController = new BubbleController(new BubbleService(), window);
-let pageController = new PageController(new PageService(), window);
+import dotenv from 'dotenv';
 
-window.run()
+dotenv.config()
+
+
+// psnTest().then(result => {
+    let window = new AppWindow();
+
+    let bubbleController = new BubbleController(new BubbleService(), window);
+    let pageController = new PageController(new PageService(), window);
+
+    window.run()
+// });
+
+async function psnTest() {
+
+    const myNpsso = process.env["PSN"];
+    const accessCode = await psn.exchangeNpssoForCode(myNpsso);
+    const authorization = await psn.exchangeCodeForAccessToken(accessCode);
+
+    const trophyTitlesResponse = await psn.getUserTitles(
+        { accessToken: authorization.accessToken },
+        "me"
+      );
+
+    console.log(trophyTitlesResponse);
+}
