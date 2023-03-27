@@ -41,7 +41,7 @@ component BubbleItem {
 
 export struct Bubble {
     title: string,
-    // icon: image,
+    icon: image,
     row: int,
     column: int,
     filler: bool,
@@ -72,7 +72,7 @@ export component BubblePageItem {
 
     for bubble[index] in model : BubbleItem {
         text: bubble.title;
-        // icon: bubble.icon;
+        icon: bubble.icon;
         x: bubble-x(bubble.row, bubble.column);
         y: bubble-y(bubble.row);
         filler: bubble.filler;
