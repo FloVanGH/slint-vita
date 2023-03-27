@@ -9,7 +9,10 @@ import { PageScrollView } from "page_scroll_view.slint";
 import { PageItem, Page } from "page.slint";
 
 export global PageAdapter {
-    in-out property <[Page]> pages: [
+    callback open-page(string /* id */) -> bool;
+    callback close-page(string /* id */);
+
+    in-out property <[Page]> model: [
         {
             title: "Trophies",
             color: #ff0000,
@@ -49,9 +52,13 @@ export global BubbleAdapter {
 }
 
 export component AppWindow inherits Window {
-    in-out property <bool> show-pages;
+    callback open-page <=> PageAdapter.open-page;
+    callback close-page <=> PageAdapter.close-page;
+
+    in-out property <bool> open-pages;
 
     in-out property <[[Bubble]]> bubbles <=> BubbleAdapter.model;
+    in-out property <[Page]> pages <=> PageAdapter.model;
 
     title: "vita";
     width: 960px;
@@ -59,8 +66,7 @@ export component AppWindow inherits Window {
     forward-focus: i-focus-scope;
 
     i-page-scroll-view := PageScrollView {
-        // count: PageAdapter.pages.length + 1;
-        count: 1;
+        count: 1 + PageAdapter.model.length;
 
         HorizontalLayout {
             padding-left: Theme.spacings.medium;
@@ -85,18 +91,14 @@ export component AppWindow inherits Window {
                 }
 
                 open-item(id) => {
-                    // debug(id);
-                    if(id != "Trophies") {
-                        return;
+                    if(PageAdapter.open-page(id)) {
+                        i-page-scroll-view.right();
                     }
-
-                    i-page-scroll-view.count = 2;
-                    i-page-scroll-view.right();
                 }
             }
         }
 
-        for page in PageAdapter.pages : PageItem {
+        for page in PageAdapter.model : PageItem {
             width: root.width;
             height: root.height;
             title: page.title;
