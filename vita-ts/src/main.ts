@@ -1,23 +1,30 @@
-import { AppWindow } from "node-ui";
+// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-License-Identifier: MIT
+
+
+import { MainWindow } from "node-ui";
 import { BubbleController } from "./controllers/bubble_controller";
 import { PageController } from "./controllers/page_controller";
 import { BubbleService } from "./services/bubble_service";
 import { PageService } from "./services/page_service";
 
+
 import * as psn from "psn-api";
 
 import dotenv from 'dotenv';
+import { AppService } from "./services/app_service";
+import { AppController } from "./controllers/app_controller";
 
 dotenv.config()
 
-
 // psnTest().then(result => {
-    let window = new AppWindow();
+    let main_window = new MainWindow();
 
-    let bubbleController = new BubbleController(new BubbleService(), window);
-    let pageController = new PageController(new PageService(), window);
+    new BubbleController(new BubbleService(), main_window);
+    new PageController(new PageService(), main_window);
+    new AppController(new AppService(), main_window);
 
-    window.run()
+    main_window.run()
 // });
 
 async function psnTest() {

@@ -1,0 +1,30 @@
+// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-License-Identifier: MIT
+
+import { Theme } from "../styling/theme.slint";
+import { StateArea } from "state_area.slint";
+
+export component ImageButton {
+    callback clicked <=> i-state-area.clicked;
+
+    in property <image> background-image <=> i-image.source;
+
+    min-width: 256px;
+    min-height: 112px;
+
+    i-container := Rectangle {
+        border-width: 4px;
+        border-radius: 4px;
+        border-color: Theme.palette.border-brush;
+        clip: true;
+
+        GridLayout {
+            padding: i-container.border-width;
+
+            i-image := Image {}
+            i-state-area := StateArea {
+                border-radius:  i-container.border-radius;
+            }
+        }
+    }
+}

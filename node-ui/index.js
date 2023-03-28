@@ -1,6 +1,6 @@
 require("slint-ui");
 
 let slint = require("slint-ui");
-const { AppWindow } = require("../ui/appwindow.slint");
+const { MainWindow } = require("../ui/main_window.slint");
 
-module.exports = { AppWindow, slint }
+module.exports = { MainWindow, slint }

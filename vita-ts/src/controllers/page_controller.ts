@@ -1,29 +1,34 @@
-import { AppWindow, slint } from "node-ui";
+// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-License-Identifier: MIT
+
+import { MainWindow, slint } from "node-ui";
 import { PageService } from "../services/page_service";
 
 export class PageController {
-    private _window: AppWindow;
+    private _main_window: MainWindow;
     private _service: PageService;
 
-    constructor(service: PageService, window: AppWindow) {
+    constructor(service: PageService, main_window: MainWindow) {
         this._service = service;
-        this._window = window;
+        this._main_window = main_window;
 
-        window.open_page.setHandler(this.openPage);
-        window.close_page.setHandler(this.closePage);
+        main_window.open_page.setHandler(this.openPage);
+        main_window.close_page.setHandler(this.closePage);
 
         this.displayPages();
     }
 
     displayPages() {
-        this._window.pages = new slint.ArrayModel(this._service.pages);
+        this._main_window.pages = new slint.ArrayModel(this._service.pages);
     }
 
     openPage = (id) => {
-        this._service.openPage(id);
-        this.displayPages();
+        let index = this._service.openPage(id);
+        if(index > -1) {
+            this.displayPages();
+        }
 
-        return true;
+        return index;
     }
 
     closePage = (id) => {

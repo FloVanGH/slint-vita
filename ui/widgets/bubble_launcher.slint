@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
-import { Theme } from "theme.slint";
+import { Theme } from "../styling/theme.slint";
 import { StateArea } from "state_area.slint";
 
 component BubbleItem {
@@ -79,6 +79,10 @@ export component BubblePageItem {
         has-focus: bubble.row == root.focus-row && bubble.column == root.focus-column;
 
         clicked => {
+            if(self.filler) {
+                return;
+            }
+
             item-clicked(bubble.title);
         }
     }

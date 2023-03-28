@@ -14,13 +14,18 @@ struct Sizes {
 }
 
 struct Animations {
+    extra-slow: duration,
     medium: duration,
     fast: duration
 }
 
 struct Palette {
     gradient-white-right: brush,
-    gradient-white-left: brush
+    gradient-white-left: brush,
+    focus-border-brush: brush,
+    focus-surface-brush: brush,
+    pressed-surface-brush: brush,
+    border-brush: brush
 }
 
 export global Theme {
@@ -37,6 +42,7 @@ export global Theme {
     };
 
     out property <Animations> animations: {
+        extra-slow: 4s,
         fast: 150ms,
         medium: 200ms,
     };
@@ -44,5 +50,9 @@ export global Theme {
     out property <Palette> palette: {
         gradient-white-right: @linear-gradient(90deg, #ffffff00 0%, #ffffff 100%),
         gradient-white-left: @linear-gradient(90deg, #ffffff 0%, #ffffff00 100%),
+        focus-border-brush: #32edff,
+        focus-surface-brush: #32edff80,
+        pressed-surface-brush: #ffffff80,
+        border-brush: #ffffff
     };
 }

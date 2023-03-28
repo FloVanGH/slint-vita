@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
-import { Theme } from "theme.slint";
+import { Theme } from "../styling/theme.slint";
 import { PathButton } from "path_button.slint";
-import { Paths } from "paths.slint";
+import { Paths } from "../styling/paths.slint";
 
 export component PageScrollView {
     callback moved();
@@ -41,6 +41,15 @@ export component PageScrollView {
         clicked => {
             root.right();
         }
+    }
+
+    public function set-selected-page(index: int) {
+        if(root.selected-page == index || index < 0 || index >= root.count) {
+            return;
+        }
+
+        root.selected-page = index;
+        root.moved();
     }
 
     public function left() {

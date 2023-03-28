@@ -1,9 +1,11 @@
 // SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
+import { Theme } from "../styling/theme.slint";
+
 export component StateArea {
     private property <bool> animate-state;
-    private property <duration> animation: 4s;
+    private property <duration> animation: Theme.animations.extra-slow;
     private property <length> shadow-offset: animate-state ? 4px * abs(sin(360deg * animation-tick() / animation)) : 0;
     private property <float> state-opacity: animate-state ?  abs(sin(360deg * animation-tick() / animation)) : 0;
 
@@ -32,11 +34,15 @@ export component StateArea {
 
     states [
         focus when root.has-focus : {
-            i-container.border-color: #32edff;
-            i-container.background: #32edff80;
-            i-container.drop-shadow-color: #32edff80;
-            i-shadow.border-color: #32edff80;
+            i-container.border-color: Theme.palette.focus-border-brush;
+            i-container.background: Theme.palette.focus-surface-brush;
+            i-container.drop-shadow-color: Theme.palette.focus-surface-brush;
+            i-shadow.border-color: Theme.palette.focus-surface-brush;
             animate-state: true;
+        }
+        pressed when i-touch-area.pressed : {
+            i-container.background: Theme.palette.pressed-surface-brush;
+            state-opacity: 1.0;
         }
     ]
 }

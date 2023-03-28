@@ -1,7 +1,8 @@
 // SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
-import { Theme } from "theme.slint";
+import { Theme } from "../styling/theme.slint";
+import { ImageButton } from "image_button.slint";
 
 export struct Page {
     title: string,
@@ -9,8 +10,11 @@ export struct Page {
 }
 
 export component PageItem {
+    callback clicked <=> i-image-button.clicked;
+
     in property <string> title;
     in property <brush> background: red;
+    in property <image> button-image <=> i-image-button.background-image;
 
     i-container := Rectangle {
         x: Theme.spacings.extra-large;
@@ -25,6 +29,16 @@ export component PageItem {
             Text {
                 color: white;
                 text: root.title;
+            }
+        }
+
+        VerticalLayout {
+            alignment: center;
+
+            HorizontalLayout {
+                alignment: center;
+
+                i-image-button := ImageButton {}
             }
         }
     }

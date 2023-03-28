@@ -1,15 +1,15 @@
 // SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
-import { Theme } from "theme.slint";
-import { StateArea } from "state_area.slint";
-import { BubbleLauncher, BubblePage, Bubble } from "bubble_launcher.slint";
-import { Pageination } from "pageination.slint";
-import { PageScrollView } from "page_scroll_view.slint";
-import { PageItem, Page } from "page.slint";
+import { Theme } from "styling/theme.slint";
+import { StateArea, BubbleLauncher, Bubble, Pageination, PageScrollView, PageItem, Page } from "widgets/widgets.slint";
+
+export global AppAdapter {
+    callback open-app(string /* id */);
+}
 
 export global PageAdapter {
-    callback open-page(string /* id */) -> bool;
+    callback open-page(string /* id */) -> int;
     callback close-page(string /* id */);
 
     in-out property <[Page]> model: [
@@ -51,9 +51,10 @@ export global BubbleAdapter {
     ];
 }
 
-export component AppWindow inherits Window {
+export component MainWindow inherits Window {
     callback open-page <=> PageAdapter.open-page;
     callback close-page <=> PageAdapter.close-page;
+    callback open-app <=> AppAdapter.open-app;
 
     in-out property <bool> open-pages;
 
@@ -91,9 +92,7 @@ export component AppWindow inherits Window {
                 }
 
                 open-item(id) => {
-                    if(PageAdapter.open-page(id)) {
-                        i-page-scroll-view.right();
-                    }
+                    i-page-scroll-view.set-selected-page(PageAdapter.open-page(id) + 1);
                 }
             }
         }
@@ -103,6 +102,11 @@ export component AppWindow inherits Window {
             height: root.height;
             title: page.title;
             background: page.color;
+
+            clicked => {
+                // FIXME: add
+                root.open-app(page.title);
+            }
         }
 
         moved => {
