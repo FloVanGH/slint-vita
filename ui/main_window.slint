@@ -3,9 +3,10 @@
 
 import { Theme } from "styling/theme.slint";
 import { StateArea, BubbleLauncher, Bubble, Pageination, PageScrollView, PageItem, Page } from "widgets/widgets.slint";
+import { AppView } from "app_view.slint";
 
 export global AppAdapter {
-    callback open-app(string /* id */);
+    callback open-app(string /* id */) -> string;
 }
 
 export global PageAdapter {
@@ -104,8 +105,14 @@ export component MainWindow inherits Window {
             background: page.color;
 
             clicked => {
-                // FIXME: add
-                root.open-app(page.title);
+                // FIXME: use an id
+                root.process-open-app(page.title);
+            }
+
+            close => {
+                debug("close");
+                root.close-page(page.title);
+                i-page-scroll-view.left();
             }
         }
 
@@ -115,6 +122,8 @@ export component MainWindow inherits Window {
             i-bubble-launcher.remove-focus();
         }
     }
+
+    i-app-view := AppView {}
 
     i-focus-scope := FocusScope {
         width: 0px;
@@ -136,5 +145,9 @@ export component MainWindow inherits Window {
 
             reject
         }
+    }
+
+    function process-open-app(id: string) {
+        i-app-view.open-internal-app(root.open-app(id));
     }
 }

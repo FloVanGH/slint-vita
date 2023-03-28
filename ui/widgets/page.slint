@@ -3,6 +3,7 @@
 
 import { Theme } from "../styling/theme.slint";
 import { ImageButton } from "image_button.slint";
+import { Container } from "container.slint";
 
 export struct Page {
     title: string,
@@ -11,17 +12,26 @@ export struct Page {
 
 export component PageItem {
     callback clicked <=> i-image-button.clicked;
+    callback close <=> i-container.close;
 
     in property <string> title;
     in property <brush> background: red;
     in property <image> button-image <=> i-image-button.background-image;
 
-    i-container := Rectangle {
+    i-container := Container {
         x: Theme.spacings.extra-large;
         y: Theme.spacings.large;
         width: root.width - 2 * Theme.spacings.extra-large;
-        height: root.height - Theme.spacings.large;
+        height: root.height - self.y;
         background: root.background;
+        border-radius: 8px;
+
+        Rectangle {
+            y: parent.height - self.height;
+            width: 100%;
+            height: parent.border-radius;
+            background: parent.background;
+        }
 
         HorizontalLayout {
             padding: Theme.spacings.medium;
@@ -41,5 +51,7 @@ export component PageItem {
                 i-image-button := ImageButton {}
             }
         }
+
+
     }
 }

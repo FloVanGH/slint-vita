@@ -1,0 +1,40 @@
+// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-License-Identifier: MIT
+
+import { TrophiesView } from "trophies_view.slint";
+import { Theme } from "styling/theme.slint";
+
+export component AppView {
+    private property <bool> trophies-open: false;
+
+    i-animation-container := Rectangle {
+        width: 25%;
+        height: 25%;
+
+        if(trophies-open): TrophiesView {
+            close => {
+                root.trophies-open = false;
+            }
+        }
+
+        animate width { duration: Theme.animations.medium; }
+        animate height { duration: Theme.animations.medium; }
+    }
+
+    public function open-internal-app(id: string) {
+        if(id == "") {
+            return;
+        }
+
+        if(id == "Trophies") {
+            root.trophies-open = true;
+        }
+    }
+
+    states [
+        open when root.trophies-open : {
+            i-animation-container.width: 100%;
+            i-animation-container.height: 100%;
+        }
+    ]
+}
