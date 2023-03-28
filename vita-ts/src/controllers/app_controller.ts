@@ -15,6 +15,11 @@ export class AppController {
     }
 
     openApp = (id) => {
-        console.log("open app: " + id);
+        // check for internal apps
+        if(id == "Trophies") {
+            return id;
+        }
+
+        return "";
     }
 }

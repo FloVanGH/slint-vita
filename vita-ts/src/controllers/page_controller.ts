@@ -32,6 +32,8 @@ export class PageController {
     }
 
     closePage = (id) => {
+        console.log("close");
+        console.log(id);
         this._service.closePage(id);
         this.displayPages();
     }

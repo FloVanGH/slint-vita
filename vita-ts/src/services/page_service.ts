@@ -36,6 +36,6 @@ export class PageService {
     }
 
     closePage(id) {
-        this._pages = this._pages.filter(p => p.id == id);
+        this._pages = this._pages.filter(p => p.id != id);
     }
 }
