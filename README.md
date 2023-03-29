@@ -1,38 +1,31 @@
-# Slint Rust Template
+# slint vita
 
-A template for a Rust application that's using [Slint](https://slint-ui.com) for the user interface.
+slint vita is an experimental showcase, of a [TypeScript](https://www.typescriptlang.org/) application with a [Slint](https://github.com/slint-ui/slint) user interface.
 
 ## About
 
-This template helps you get started developing a Rust application with Slint as toolkit
-for the user interface. It demonstrates the integration between the `.slint` UI markup and
-Rust code, how to trigger react to callbacks, get and set properties and use basic widgets.
+This showcase is used to explore and show the possibilities of Slint with the TypeScript language. The user interface of the
+showcase is inspired by the playstation vita.
 
-## Usage
+## Prerequisites
 
-1. Install Rust by following the [Rust Getting Started Guide](https://www.rust-lang.org/learn/get-started).
-   Once this is done, you should have the ```rustc``` compiler and the ```cargo``` build system installed in your path.
-2. Install [`cargo-generate`](https://github.com/cargo-generate/cargo-generate)
-    ```
-    cargo install cargo-generate
-    ```
-3. Set up a sample project with this template
-    ```
-    cargo generate --git https://github.com/slint-ui/slint-rust-template --name my-project
-    cd my-project
-    ```
-3. Build with cargo
-    ```
-    cargo build
-    ```
-4. Run the application binary
-     ```
-     cargo run
-     ```
+In order to use this template and build a Node.js application, you need to install a few tools:
 
-We recommend using an IDE for development, along with our [LSP-based IDE integration for `.slint` files](https://github.com/slint-ui/slint/blob/master/tools/lsp/README.md). You can also load this project directly in [Visual Studio Code](https://code.visualstudio.com) and install our [Slint extension](https://marketplace.visualstudio.com/items?itemName=Slint.slint).
+  * **[Node.js](https://nodejs.org/download/release/v16.19.1/)** (v16. Newer versions currently not supported: [#961](https://github.com/slint-ui/slint/issues/961))
+  * **[Rust compiler](https://www.rust-lang.org/tools/install)** (1.66 or newer)
 
-## Next Steps
+## How to run
 
-We hope that this template helps you get started and you enjoy exploring making user interfaces with Slint. To learn more
-about the Slint APIs and the `.slint` markup language check out our [online documentation](https://slint-ui.com/docs/rust/slint/).
+From root of this projects run:
+
+```sh
+export SLINT_BACKEND=winit && npm start
+```
+
+## License
+
+The source code of the showcase is available under the terms of MIT license.
+(See [LICENSE-MIT](./LICENSES/MIT.txt) for details.)
+
+However, because of the use of GPL dependencies, lili, as a whole, is licensed
+under the terms of the GPLv3 (See [LICENSE-GPL](./LICENSES/GPL-3.0-only.txt))

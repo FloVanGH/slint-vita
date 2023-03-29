@@ -1,0 +1,146 @@
+// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-License-Identifier: MIT
+
+import { Bubble, BubbleLauncher, PageScrollView, Page, PageItem, Pageination } from "../widgets/widgets.slint";
+import { Theme } from "../styling/theme.slint";
+
+export global LauncherAdapter {
+    callback move-selection-left();
+    callback move-selection-right();
+    callback move-selection-up();
+    callback move-selection-down();
+    callback clear-selection();
+    callback open-page(string /* id */);
+    callback close-current-page();
+    callback move-left();
+    callback move-right();
+    callback on-enter();
+    callback open-app(string /* id */);
+
+    in property <[[Bubble]]> bubbles: [
+        [
+            { title: "Minetest", icon: @image-url("minetest.png"), row: 0, column: 0 },
+            { title: "Trophies", row: 0, column: 1 },
+            { title: "Item 3", row: 0, column: 2 },
+            { title: "Item 4", row: 1, column: 0 },
+            { title: "Item 5", row: 1, column: 1 },
+            { title: "Item 6", row: 1, column: 2 },
+            { title: "Item 7", row: 1, column: 3 },
+            { title: "Item 8", row: 2, column: 0 },
+            { title: "Item 9", row: 2, column: 1 },
+            { title: "Item 10", row: 2, column: 2, filler: false },
+        ],
+        [
+            { title: "Item 1", row: 0, column: 0 },
+            { title: "Item 1", row: 0, column: 0 },
+            { row: 0, column: 1, filler: true },
+            { title: "Item 3", row: 0, column: 2 },
+            { title: "Item 4", row: 1, column: 0 },
+            { title: "Item 5", row: 1, column: 1 },
+            { row: 1, column: 2, filler: true },
+            { title: "Item 7", row: 1, column: 3 },
+            { title: "Item 8", row: 2, column: 0 },
+            { title: "Item 9", row: 2, column: 1 },
+            { row: 2, column: 2, filler: true },
+            { row: 2, column: 3, filler: true },
+        ]
+    ];
+    in property <[Page]> pages: [
+        {
+            title: "Trophies",
+            color: #000000,
+        }
+    ];
+
+    in property <int> current-bubble-page: 0;
+    in property <int> current-page: 0;
+}
+
+export component LauncherView {
+    forward-focus: i-focus-scope;
+
+    i-page-scroll-view := PageScrollView {
+        // 1 for the bubbles as first page
+        count: 1 + LauncherAdapter.pages.length;
+        current-page <=> LauncherAdapter.current-page;
+
+        move-left => {
+            LauncherAdapter.move-left();
+        }
+
+        move-right => {
+            LauncherAdapter.move-right();
+        }
+
+        // bubbles
+        HorizontalLayout {
+            padding-left: Theme.spacings.medium;
+            width: root.width;
+            height: root.height;
+
+            i-pageination := Pageination {
+                count: LauncherAdapter.bubbles.length;
+                selected-index: LauncherAdapter.current-bubble-page;
+            }
+
+            i-bubble-launcher := BubbleLauncher {
+                model: LauncherAdapter.bubbles;
+                current-page <=> LauncherAdapter.current-bubble-page;
+
+                bubble-clicked(id) => {
+                    LauncherAdapter.open-page(id);
+                }
+            }
+        }
+
+        for page in LauncherAdapter.pages : PageItem {
+            width: root.width;
+            height: root.height;
+            title: page.title;
+            background: page.color;
+
+            clicked => {
+                LauncherAdapter.open-app(page.title);
+            }
+
+            close => {
+                LauncherAdapter.close-current-page();
+            }
+        }
+    }
+
+    i-focus-scope := FocusScope {
+        width: 0px;
+
+        key-pressed(e) => {
+            if (e.text == Key.Escape) {
+                LauncherAdapter.clear-selection();
+                return accept;
+            }
+            if (e.text == Key.Return) {
+                LauncherAdapter.on-enter();
+                return accept;
+            }
+            if (e.text == Key.LeftArrow) {
+                LauncherAdapter.move-selection-left();
+                return accept;
+            }
+
+            if (e.text == Key.RightArrow) {
+                LauncherAdapter.move-selection-right();
+                return accept;
+            }
+
+            if (e.text == Key.UpArrow) {
+                LauncherAdapter.move-selection-up();
+                return accept;
+            }
+
+            if (e.text == Key.DownArrow) {
+                LauncherAdapter.move-selection-down();
+                return accept;
+            }
+            reject
+        }
+    }
+}
