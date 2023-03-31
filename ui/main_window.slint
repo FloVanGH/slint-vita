@@ -4,11 +4,12 @@
 import { Theme } from "styling/theme.slint";
 import { StateArea, BubbleLauncher, Bubble, Pageination, PageScrollView, PageItem, Page } from "widgets/widgets.slint";
 
-import { LauncherView, LauncherAdapter, TrophiesAdapter } from "views/views.slint";
+import { LauncherView, LauncherAdapter, TrophiesAdapter, Game } from "views/views.slint";
 
 export { LauncherAdapter, TrophiesAdapter }
 
 export component MainWindow inherits Window {
+    // launcher callback
     callback launcher-move-selection-left <=> LauncherAdapter.move-selection-left;
     callback launcher-move-selection-right <=> LauncherAdapter.move-selection-right;
     callback launcher-move-selection-up <=> LauncherAdapter.move-selection-up;
@@ -22,11 +23,17 @@ export component MainWindow inherits Window {
     callback launcher-open-app <=> LauncherAdapter.open-app;
     callback launcher-close-trophies <=> LauncherAdapter.close-trophies;
 
+    // trophies callbacks
+
+    // launcher properties
     in property <[[Bubble]]> launcher-bubbles <=> LauncherAdapter.bubbles;
     in property <[Page]> launcher-pages <=> LauncherAdapter.pages;
     in property <int> launcher-current-bubble-page <=> LauncherAdapter.current-bubble-page;
     in property <int> launcher-current-page <=> LauncherAdapter.current-page;
     in property <bool> launcher-show-trophies <=> LauncherAdapter.show-trophies;
+
+    // trophies properties
+    in property <[Game]> trophies-games <=> TrophiesAdapter.games;
 
     title: "vita";
     width: 960px;

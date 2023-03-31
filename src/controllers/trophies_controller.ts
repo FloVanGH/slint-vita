@@ -14,6 +14,8 @@ export class TrophiesController {
     }
 
     public init(): void {
-        console.log("init");
+        this._mainWindow.trophies_games = new slint.ArrayModel(
+            this._service.games
+        );
     }
 }

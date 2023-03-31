@@ -1,10 +1,14 @@
 // SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
-import { Container } from "../widgets/widgets.slint";
+import { Container, PageScrollView, ListView, ListViewItem } from "../widgets/widgets.slint";
+
+export struct Game {
+    title: string
+}
 
 export global TrophiesAdapter {
-
+    in property <[Game]> games;
 }
 
 export component TrophiesView {
@@ -15,5 +19,29 @@ export component TrophiesView {
 
     i-container := Container {
         background: green;
+
+        PageScrollView {
+            width: 100%;
+            height: 100%;
+
+            VerticalLayout {
+                width: root.width;
+                height: root.height;
+                alignment: start;
+                for game in TrophiesAdapter.games : ListViewItem {
+                    text: game.title;
+                }
+            }
+            // ListView {
+            //     width: root.width;
+            //     height: root.height;
+
+            //     HorizontalLayout {
+
+            //     }
+
+
+            // }
+        }
     }
 }

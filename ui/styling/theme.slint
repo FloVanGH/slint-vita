@@ -23,10 +23,12 @@ struct Animations {
 struct Palette {
     gradient-white-right: brush,
     gradient-white-left: brush,
+    items-gradient: brush,
     focus-border-brush: brush,
     focus-surface-brush: brush,
     pressed-surface-brush: brush,
-    border-brush: brush
+    border-brush: brush,
+    foreground-brush: brush
 }
 
 export global Theme {
@@ -52,9 +54,11 @@ export global Theme {
     out property <Palette> palette: {
         gradient-white-right: @linear-gradient(90deg, #ffffff00 0%, #ffffff 100%),
         gradient-white-left: @linear-gradient(90deg, #ffffff 0%, #ffffff00 100%),
+        items-gradient: @linear-gradient(180deg, #ffffff78 0%, #ffffff2d 100%),
         focus-border-brush: #32edff,
         focus-surface-brush: #32edff80,
         pressed-surface-brush: #ffffff80,
-        border-brush: #ffffff
+        border-brush: #ffffff,
+        foreground-brush: #ffffff
     };
 }
