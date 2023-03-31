@@ -8,6 +8,9 @@ import { AppServiceMock } from "./services/mocks/app_service_mock";
 import { BubbleServiceMock } from "./services/mocks/bubble_service_mock";
 import { TrophyServiceMock } from "./services/mocks/trophy_service_mock";
 import { TrophyService } from "./services/trophy_service";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 const mainWindow = new MainWindow();
 
@@ -19,15 +22,27 @@ const launcherController = new LauncherController(
 
 launcherController.init();
 
-const trophyService = new TrophyService();
-trophyService.init("blub").then(
-    () => {
-        console.log("success");
-    },
-    () => {
-        runMock(mainWindow);
-    }
-);
+if (process.env.PSN !== undefined && process.env.PSN !== "") {
+    const trophyService = new TrophyService();
+    trophyService.init(process.env.PSN).then(
+        () => {
+            console.log("Run psn service");
+            const trophiesController = new TrophiesController(
+                trophyService,
+                mainWindow
+            );
+
+            trophiesController.init();
+
+            mainWindow.run();
+        },
+        () => {
+            runMock(mainWindow);
+        }
+    );
+} else {
+    runMock(mainWindow);
+}
 
 function runMock(mainWindow: MainWindow): void {
     console.log("Cannot connect to psn, run mock service.");

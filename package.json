@@ -10,6 +10,7 @@
   "keywords": [],
   "author": "",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "psn-api": "^2.9.0",
     "ui-import": "file:ui-import"
   },
