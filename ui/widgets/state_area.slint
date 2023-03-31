@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
 import { Theme } from "../styling/theme.slint";
@@ -14,6 +14,9 @@ export component StateArea {
     in property <length> border-radius;
     in property <bool> has-focus;
 
+    preferred-width: 100%;
+    preferred-height: 100%;
+
     i-shadow := Rectangle {
         x: -shadow-offset;
         y: -shadow-offset;
@@ -22,6 +25,8 @@ export component StateArea {
         border-radius: root.border-radius + shadow-offset;
         border-width: shadow-offset - 1px;
         opacity: state-opacity;
+
+        animate background { duration: Theme.animations.medium; }
     }
 
     i-container := Rectangle {
@@ -30,7 +35,10 @@ export component StateArea {
         border-radius: root.border-radius;
     }
 
-    i-touch-area := TouchArea {}
+    i-touch-area := TouchArea {
+        width: 100%;
+        height: 100%;
+    }
 
     states [
         focus when root.has-focus : {

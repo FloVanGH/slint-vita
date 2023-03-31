@@ -1,14 +1,15 @@
-// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
 import { Theme } from "styling/theme.slint";
-import { StateArea, BubbleLauncher, Bubble, Pageination, PageScrollView, PageItem, Page } from "widgets/widgets.slint";
+import { StateArea, BubbleLauncher, Bubble, Pageination, PageScrollView, PageItem } from "widgets/widgets.slint";
 
-import { LauncherView, LauncherAdapter } from "views/views.slint";
+import { LauncherView, LauncherAdapter, ListAdapter, ListItem } from "views/views.slint";
 
-export { LauncherAdapter }
+export { LauncherAdapter, ListAdapter }
 
 export component MainWindow inherits Window {
+    // launcher callback
     callback launcher-move-selection-left <=> LauncherAdapter.move-selection-left;
     callback launcher-move-selection-right <=> LauncherAdapter.move-selection-right;
     callback launcher-move-selection-up <=> LauncherAdapter.move-selection-up;
@@ -18,17 +19,33 @@ export component MainWindow inherits Window {
     callback launcher-close-current-page <=> LauncherAdapter.close-current-page;
     callback launcher-move-left <=> LauncherAdapter.move-left;
     callback launcher-move-right <=> LauncherAdapter.move-right;
+    callback launcher-move-up <=> LauncherAdapter.move-up;
+    callback launcher-move-down <=> LauncherAdapter.move-down;
     callback launcher-on-enter <=> LauncherAdapter.on-enter;
     callback launcher-open-app <=> LauncherAdapter.open-app;
+    callback launcher-close-trophies <=> LauncherAdapter.close-trophies;
 
+    // list callbacks
+    callback list-move-up <=> ListAdapter.move-up;
+    callback list-move-down <=> ListAdapter.move-down;
+    callback list-show-details <=> ListAdapter.show-details;
+
+    // launcher properties
     in property <[[Bubble]]> launcher-bubbles <=> LauncherAdapter.bubbles;
-    in property <[Page]> launcher-pages <=> LauncherAdapter.pages;
+    in property <[Bubble]> launcher-pages <=> LauncherAdapter.pages;
     in property <int> launcher-current-bubble-page <=> LauncherAdapter.current-bubble-page;
     in property <int> launcher-current-page <=> LauncherAdapter.current-page;
+    in property <bool> launcher-show-list <=> LauncherAdapter.show-list;
+
+    // list properties
+    in property <[[ListItem]]> list-items <=> ListAdapter.list-items;
+    in property <string> list-title <=> ListAdapter.title;
+    in property <brush> list-background <=> ListAdapter.background;
 
     title: "vita";
     width: 960px;
     height: 544px;
+    background: Theme.palette.background-gradient;
 
     forward-focus:  i-launcher-view;
 

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
 import { Theme } from "../styling/theme.slint";
@@ -27,32 +27,32 @@ export component Container {
 
         @children
 
-        Thumb {
-            x: (parent.width - self.width) / 2;
-            y: 0px;
+        animate y { duration: Theme.animations.fast; }
+    }
 
-            moved => {
-                i-inner-container.y = min(root.height / 2, max(0px, i-inner-container.y - (self.pressed-y - self.mouse-y)));
+    Thumb {
+        x: (parent.width - self.width) / 2;
+        y:  i-inner-container.y;
 
-                if(i-inner-container.y >= root.width * 0.2) {
-                    root.close();
-                }
-            }
+        moved => {
+            i-inner-container.y = min(root.height / 2, max(0px, i-inner-container.y - (self.pressed-y - self.mouse-y)));
 
-            pointer-event(e) => {
-                if(e.kind == PointerEventKind.up) {
-                    // FIXME
-                    if(i-inner-container.y >= root.width * 0.2) {
-                        root.close();
-                    }
-
-                    if(i-inner-container.y < root.width * 0.2) {
-                        i-inner-container.y = 0;
-                    }
-                }
+            if(i-inner-container.y >= root.width * 0.2) {
+                root.close();
             }
         }
 
-        animate y { duration: Theme.animations.fast; }
+        pointer-event(e) => {
+            if(e.kind == PointerEventKind.up) {
+                // FIXME
+                if(i-inner-container.y >= root.width * 0.2) {
+                    root.close();
+                }
+
+                if(i-inner-container.y < root.width * 0.2) {
+                    i-inner-container.y = 0;
+                }
+            }
+        }
     }
 }

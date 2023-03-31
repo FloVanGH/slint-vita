@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
 struct Spacings {
@@ -16,16 +16,31 @@ struct Sizes {
 struct Animations {
     extra-slow: duration,
     medium: duration,
-    fast: duration
+    fast: duration,
+    slow: duration
 }
 
 struct Palette {
-    gradient-white-right: brush,
-    gradient-white-left: brush,
+    white-right-gradient: brush,
+    white-left-gradient: brush,
+    white-up-gradient: brush,
+    white-down-gradient: brush,
+    background-gradient: brush,
+    items-gradient: brush,
     focus-border-brush: brush,
     focus-surface-brush: brush,
     pressed-surface-brush: brush,
-    border-brush: brush
+    border-brush: brush,
+    foreground-brush: brush
+}
+
+struct Label {
+    font-size: length
+}
+
+struct Typo {
+    label-list-title: Label,
+    label-list-description: Label,
 }
 
 export global Theme {
@@ -45,14 +60,29 @@ export global Theme {
         extra-slow: 4s,
         fast: 150ms,
         medium: 200ms,
+        slow: 500ms,
     };
 
     out property <Palette> palette: {
-        gradient-white-right: @linear-gradient(90deg, #ffffff00 0%, #ffffff 100%),
-        gradient-white-left: @linear-gradient(90deg, #ffffff 0%, #ffffff00 100%),
+        white-right-gradient: @linear-gradient(90deg, #ffffff00 0%, #ffffff 100%),
+        white-left-gradient: @linear-gradient(90deg, #ffffff 0%, #ffffff00 100%),
+        white-up-gradient: @linear-gradient(180deg, #ffffff 0%, #ffffff00 100%),
+        white-down-gradient: @linear-gradient(180deg, #ffffff00 0%, #ffffff 100%),
+        background-gradient: @linear-gradient(180deg, #6d717c 0%, #96a2ae 100%),
+        items-gradient: @linear-gradient(180deg, #ffffff78 0%, #ffffff2d 100%),
         focus-border-brush: #32edff,
         focus-surface-brush: #32edff80,
         pressed-surface-brush: #ffffff80,
-        border-brush: #ffffff
+        border-brush: #ffffff,
+        foreground-brush: #ffffff
+    };
+
+    out property <Typo> typo: {
+        label-list-title: {
+            font-size: 24px,
+        },
+        label-list-description: {
+            font-size: 14px,
+        }
     };
 }

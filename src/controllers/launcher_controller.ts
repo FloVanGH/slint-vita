@@ -1,10 +1,11 @@
-// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
 import { type MainWindow, slint } from "../../ui-import";
 import { type Bubble } from "../data/bubble";
-import { type AppService } from "../services/interfaces/app_service";
 import { type BubbleService } from "../services/interfaces/bubble_service";
+import { type NavigationService } from "../services/interfaces/navigation_service";
+import * as view from "../keys/view";
 
 enum Direction {
     Left,
@@ -14,18 +15,18 @@ enum Direction {
 }
 
 export class LauncherController {
-    private readonly _appService: AppService;
     private readonly _bubbleService: BubbleService;
     private readonly _mainWindow: MainWindow;
+    private readonly _navigationService: NavigationService;
     private _selectedBubble?: Bubble;
 
     constructor(
         bubbleService: BubbleService,
-        appService: AppService,
+        navigationService: NavigationService,
         mainWindow: MainWindow
     ) {
         this._bubbleService = bubbleService;
-        this._appService = appService;
+        this._navigationService = navigationService;
         this._mainWindow = mainWindow;
         this._selectedBubble = undefined;
     }
@@ -73,7 +74,11 @@ export class LauncherController {
         );
         this._mainWindow.launcher_move_left.setHandler(this.moveLeft);
         this._mainWindow.launcher_move_right.setHandler(this.moveRight);
+        this._mainWindow.launcher_move_up.setHandler(this.moveUp);
+        this._mainWindow.launcher_move_down.setHandler(this.moveDown);
         this._mainWindow.launcher_on_enter.setHandler(this.onEnter);
+        this._mainWindow.launcher_open_app.setHandler(this.openApp);
+        this._mainWindow.launcher_close_trophies.setHandler(this.closeList);
     }
 
     private clearSelection(): void {
@@ -134,10 +139,13 @@ export class LauncherController {
         const pagesCount = this._mainWindow.launcher_bubbles.length;
         const currentPage = this._mainWindow.launcher_current_bubble_page;
 
-        if (currentPage < pagesCount - 1) {
-            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-            this._mainWindow.launcher_current_bubble_page += 1;
+        if (currentPage >= pagesCount) {
+            return;
         }
+
+        this.clearSelection();
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+        this._mainWindow.launcher_current_bubble_page += 1;
     }
 
     private moveSelection(direction: Direction): void {
@@ -270,6 +278,12 @@ export class LauncherController {
     };
 
     openPage = (key: string): void => {
+        const currentPage = this._mainWindow.launcher_current_bubble_page;
+
+        if (currentPage < 0 || currentPage >= this._bubbleService.pageCount) {
+            return;
+        }
+
         for (const page of this._mainWindow.launcher_pages.entries()) {
             if (page[1].title === key) {
                 // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
@@ -278,7 +292,9 @@ export class LauncherController {
             }
         }
 
-        const page = this._appService.pages.find((p) => p.title === key);
+        const page = this._bubbleService.bubbles[currentPage].find(
+            (p) => p.title === key
+        );
 
         if (page === undefined) {
             return;
@@ -322,11 +338,30 @@ export class LauncherController {
         }
     };
 
+    moveUp = (): void => {
+        this.showPreviousBubblePage();
+    };
+
+    moveDown = (): void => {
+        this.showNextBubblePage();
+    };
+
     onEnter = (): void => {
         if (this._selectedBubble === undefined) {
             return;
         }
 
         this.openPage(this._selectedBubble.title);
+    };
+
+    openApp = (key: string): void => {
+        if (key === view.trophies) {
+            this._mainWindow.launcher_show_list =
+                this._navigationService.show(key);
+        }
+    };
+
+    closeList = (): void => {
+        this._mainWindow.launcher_show_list = false;
     };
 }

@@ -1,14 +1,9 @@
-// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
 import { Theme } from "../styling/theme.slint";
 import { ImageButton } from "image_button.slint";
 import { Container } from "container.slint";
-
-export struct Page {
-    title: string,
-    color: brush
-}
 
 export component PageItem {
     callback clicked <=> i-image-button.clicked;
