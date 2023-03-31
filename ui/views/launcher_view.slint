@@ -1,7 +1,8 @@
 // SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
-import { Bubble, BubbleLauncher, PageScrollView, Page, PageItem, Pageination } from "../widgets/widgets.slint";
+import { Bubble, BubbleLauncher, PageScrollView, Page, PageItem, Pageination, AnimationContainer } from "../widgets/widgets.slint";
+import { TrophiesView } from "trophies_view.slint";
 import { Theme } from "../styling/theme.slint";
 
 export global LauncherAdapter {
@@ -16,6 +17,7 @@ export global LauncherAdapter {
     callback move-right();
     callback on-enter();
     callback open-app(string /* id */);
+    callback close-trophies();
 
     in property <[[Bubble]]> bubbles: [
         [
@@ -54,6 +56,7 @@ export global LauncherAdapter {
 
     in property <int> current-bubble-page: 0;
     in-out property <int> current-page: 0;
+    in property <bool> show-trophies;
 
     // dummy callbacks for slint viewer
     move-right => {
@@ -156,6 +159,19 @@ export component LauncherView {
                 return accept;
             }
             reject
+        }
+    }
+
+    AnimationContainer {
+        width: 100%;
+        height: 100%;
+        open: LauncherAdapter.show-trophies;
+
+
+        if (LauncherAdapter.show-trophies) : TrophiesView {
+            close => {
+                LauncherAdapter.close-trophies();
+            }
         }
     }
 }

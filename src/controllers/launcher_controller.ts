@@ -74,6 +74,8 @@ export class LauncherController {
         this._mainWindow.launcher_move_left.setHandler(this.moveLeft);
         this._mainWindow.launcher_move_right.setHandler(this.moveRight);
         this._mainWindow.launcher_on_enter.setHandler(this.onEnter);
+        this._mainWindow.launcher_open_app.setHandler(this.openApp);
+        this._mainWindow.launcher_close_trophies.setHandler(this.closeTrophies);
     }
 
     private clearSelection(): void {
@@ -328,5 +330,15 @@ export class LauncherController {
         }
 
         this.openPage(this._selectedBubble.title);
+    };
+
+    openApp = (key: string): void => {
+        if (key === "Trophies") {
+            this._mainWindow.launcher_show_trophies = true;
+        }
+    };
+
+    closeTrophies = (): void => {
+        this._mainWindow.launcher_show_trophies = false;
     };
 }

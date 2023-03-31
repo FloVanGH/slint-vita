@@ -16,7 +16,8 @@ struct Sizes {
 struct Animations {
     extra-slow: duration,
     medium: duration,
-    fast: duration
+    fast: duration,
+    slow: duration
 }
 
 struct Palette {
@@ -45,6 +46,7 @@ export global Theme {
         extra-slow: 4s,
         fast: 150ms,
         medium: 200ms,
+        slow: 500ms,
     };
 
     out property <Palette> palette: {
