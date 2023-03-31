@@ -3,151 +3,34 @@
 
 import { Theme } from "styling/theme.slint";
 import { StateArea, BubbleLauncher, Bubble, Pageination, PageScrollView, PageItem, Page } from "widgets/widgets.slint";
-import { AppView } from "app_view.slint";
 
-export global AppAdapter {
-    callback open-app(string /* id */) -> string;
-}
+import { LauncherView, LauncherAdapter } from "views/views.slint";
 
-export global PageAdapter {
-    callback open-page(string /* id */) -> int;
-    callback close-page(string /* id */);
-
-    in-out property <[Page]> model: [
-        {
-            title: "Trophies",
-            color: #ff0000,
-        }
-    ];
-}
-
-export global BubbleAdapter {
-    in-out property <[[Bubble]]> model: [
-        [
-            { title: "Minetest", icon: @image-url("minetest.png"), row: 0, column: 0 },
-            { title: "Trophies", row: 0, column: 1 },
-            { title: "Item 3", row: 0, column: 2 },
-            { title: "Item 4", row: 1, column: 0 },
-            { title: "Item 5", row: 1, column: 1 },
-            { title: "Item 6", row: 1, column: 2 },
-            { title: "Item 7", row: 1, column: 3 },
-            { title: "Item 8", row: 2, column: 0 },
-            { title: "Item 9", row: 2, column: 1 },
-            { title: "Item 10", row: 2, column: 2, filler: false },
-        ],
-        [
-            { title: "Item 1", row: 0, column: 0 },
-            { title: "Item 1", row: 0, column: 0 },
-            { row: 0, column: 1, filler: true },
-            { title: "Item 3", row: 0, column: 2 },
-            { title: "Item 4", row: 1, column: 0 },
-            { title: "Item 5", row: 1, column: 1 },
-            { row: 1, column: 2, filler: true },
-            { title: "Item 7", row: 1, column: 3 },
-            { title: "Item 8", row: 2, column: 0 },
-            { title: "Item 9", row: 2, column: 1 },
-            { row: 2, column: 2, filler: true },
-            { row: 2, column: 3, filler: true },
-        ]
-    ];
-}
+export { LauncherAdapter }
 
 export component MainWindow inherits Window {
-    callback open-page <=> PageAdapter.open-page;
-    callback close-page <=> PageAdapter.close-page;
-    callback open-app <=> AppAdapter.open-app;
+    callback launcher-move-selection-left <=> LauncherAdapter.move-selection-left;
+    callback launcher-move-selection-right <=> LauncherAdapter.move-selection-right;
+    callback launcher-move-selection-up <=> LauncherAdapter.move-selection-up;
+    callback launcher-move-selection-down <=> LauncherAdapter.move-selection-down;
+    callback launcher-clear-selection <=> LauncherAdapter.clear-selection;
+    callback launcher-open-page <=> LauncherAdapter.open-page;
+    callback launcher-close-current-page <=> LauncherAdapter.close-current-page;
+    callback launcher-move-left <=> LauncherAdapter.move-left;
+    callback launcher-move-right <=> LauncherAdapter.move-right;
+    callback launcher-on-enter <=> LauncherAdapter.on-enter;
+    callback launcher-open-app <=> LauncherAdapter.open-app;
 
-    in-out property <bool> open-pages;
-
-    in-out property <[[Bubble]]> bubbles <=> BubbleAdapter.model;
-    in-out property <[Page]> pages <=> PageAdapter.model;
+    in property <[[Bubble]]> launcher-bubbles <=> LauncherAdapter.bubbles;
+    in property <[Page]> launcher-pages <=> LauncherAdapter.pages;
+    in property <int> launcher-current-bubble-page <=> LauncherAdapter.current-bubble-page;
+    in property <int> launcher-current-page <=> LauncherAdapter.current-page;
 
     title: "vita";
     width: 960px;
     height: 544px;
-    forward-focus: i-focus-scope;
 
-    i-page-scroll-view := PageScrollView {
-        count: 1 + PageAdapter.model.length;
+    forward-focus:  i-launcher-view;
 
-        HorizontalLayout {
-            padding-left: Theme.spacings.medium;
-            width: root.width;
-            height: root.height;
-
-            i-pageination := Pageination {
-                count: i-bubble-launcher.model.length;
-                selected-index: i-bubble-launcher.selected-page;
-            }
-
-            i-bubble-launcher := BubbleLauncher {
-                model <=> BubbleAdapter.model;
-
-                page-right => {
-                    if(i-page-scroll-view.count == 1) {
-                        return false;
-                    }
-
-                    i-page-scroll-view.right();
-                    return true;
-                }
-
-                open-item(id) => {
-                    i-page-scroll-view.set-selected-page(PageAdapter.open-page(id) + 1);
-                }
-            }
-        }
-
-        for page in PageAdapter.model : PageItem {
-            width: root.width;
-            height: root.height;
-            title: page.title;
-            background: page.color;
-
-            clicked => {
-                // FIXME: use an id
-                root.process-open-app(page.title);
-            }
-
-            close => {
-                debug("close");
-                root.close-page(page.title);
-                i-page-scroll-view.left();
-            }
-        }
-
-        moved => {
-            // remove inner focus
-            i-focus-scope.focus();
-            i-bubble-launcher.remove-focus();
-        }
-    }
-
-    i-app-view := AppView {}
-
-    i-focus-scope := FocusScope {
-        width: 0px;
-
-        key-pressed(e) => {
-            if((e.text == Key.DownArrow || e.text == Key.UpArrow || e.text == Key.LeftArrow || ( e.text == Key.RightArrow &&  i-page-scroll-view.count == 1))
-                && i-page-scroll-view.selected-page == 0) {
-                i-bubble-launcher.focus-first();
-                return accept;
-            }
-
-            if(e.text == Key.LeftArrow) {
-                i-page-scroll-view.left();
-            }
-
-            if(e.text == Key.RightArrow) {
-                i-page-scroll-view.right();
-            }
-
-            reject
-        }
-    }
-
-    function process-open-app(id: string) {
-        i-app-view.open-internal-app(root.open-app(id));
-    }
+    i-launcher-view := LauncherView {}
 }
