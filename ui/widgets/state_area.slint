@@ -22,6 +22,8 @@ export component StateArea {
         border-radius: root.border-radius + shadow-offset;
         border-width: shadow-offset - 1px;
         opacity: state-opacity;
+
+        animate background { duration: Theme.animations.medium; }
     }
 
     i-container := Rectangle {

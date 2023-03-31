@@ -1,13 +1,16 @@
 // SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
-import { Container, PageScrollView, ListView, ListViewItem } from "../widgets/widgets.slint";
+import { Container, PageScrollView, ListViewItem } from "../widgets/widgets.slint";
 
 export struct Game {
-    title: string
+    title: string,
+    selected: bool
 }
 
 export global TrophiesAdapter {
+    callback game-clicked(int /* index */);
+
     in property <[Game]> games;
 }
 
@@ -24,24 +27,19 @@ export component TrophiesView {
             width: 100%;
             height: 100%;
 
-            VerticalLayout {
+            Flickable {
                 width: root.width;
                 height: root.height;
-                alignment: start;
-                for game in TrophiesAdapter.games : ListViewItem {
-                    text: game.title;
+
+                VerticalLayout {
+                    padding-top: 32px;
+                    alignment: start;
+
+                    for game[index] in TrophiesAdapter.games : ListViewItem {
+                        text: game.title;
+                    }
                 }
             }
-            // ListView {
-            //     width: root.width;
-            //     height: root.height;
-
-            //     HorizontalLayout {
-
-            //     }
-
-
-            // }
         }
     }
 }

@@ -2,9 +2,13 @@
 // SPDX-License-Identifier: MIT
 
 import { Theme } from "../styling/theme.slint";
+import { StateArea } from "state_area.slint";
 
 export component ListViewItem {
+    callback clicked <=> i-state-area.clicked;
+
     in property <string> text <=> i-text.text;
+    in property <bool> selected <=> i-state-area.has-focus;
 
     min-height: 64px;
 
@@ -36,14 +40,16 @@ export component ListViewItem {
             vertical-alignment: center;
         }
     }
+
+    i-state-area := StateArea {}
 }
 
 export component ListView {
-    Flickable {
+    // Flickable {
         VerticalLayout {
             alignment: start;
 
             @children
         }
-    }
+    // }
 }

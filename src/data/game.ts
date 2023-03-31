@@ -3,8 +3,10 @@
 
 export class Game {
     public title: string;
+    public selected: boolean;
 
     constructor(title: string) {
         this.title = title;
+        this.selected = false;
     }
 }
