@@ -15,18 +15,14 @@ export component PageScrollView {
     width: 100%;
     height: 100%;
 
-    i-flickable := Flickable {
+    i-layout := HorizontalLayout {
+        x: -min(max(0px, root.current-page * self.width), root.count * self.width);
         width: 100%;
         height: 100%;
-        // need to be non interactive because it causes trouble with the flickable of bubble launcher
-        interactive: false;
-        viewport-x: -min(max(0px, root.current-page * self.width), root.count * self.width);
 
-        HorizontalLayout {
-            @children
-        }
+        @children
 
-        animate viewport-x { duration: Theme.animations.medium;  }
+        animate x { duration: Theme.animations.medium;  }
     }
 
     if(root.current-page > 0) : PathButton {
