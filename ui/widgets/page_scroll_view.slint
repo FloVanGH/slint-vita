@@ -12,7 +12,12 @@ export component PageScrollView {
     in-out property <int> current-page;
     in property <int> count;
 
+    width: 100%;
+    height: 100%;
+
     i-flickable := Flickable {
+        width: 100%;
+        height: 100%;
         // need to be non interactive because it causes trouble with the flickable of bubble launcher
         interactive: false;
         viewport-x: -min(max(0px, root.current-page * self.width), root.count * self.width);
