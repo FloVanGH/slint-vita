@@ -1,12 +1,10 @@
 // SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
-export class Page {
+export class Game {
     public title: string;
-    public color: string;
 
-    constructor(title: string, color: string) {
+    constructor(title: string) {
         this.title = title;
-        this.color = color;
     }
 }

@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
-import { type Page } from "../../data/page";
+import { type Game } from "../../data/game";
 
-export interface AppService {
-    get pages(): Page[];
+export interface TrophyService {
+    get games(): Game[];
 }
