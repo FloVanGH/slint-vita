@@ -7,6 +7,7 @@ import { TrophiesController } from "./controllers/trophies_controller";
 import { AppServiceMock } from "./services/mocks/app_service_mock";
 import { BubbleServiceMock } from "./services/mocks/bubble_service_mock";
 import { TrophyServiceMock } from "./services/mocks/trophy_service_mock";
+import { TrophyService } from "./services/trophy_service";
 
 const mainWindow = new MainWindow();
 
@@ -18,11 +19,23 @@ const launcherController = new LauncherController(
 
 launcherController.init();
 
-const trophiesController = new TrophiesController(
-    new TrophyServiceMock(),
-    mainWindow
+const trophyService = new TrophyService();
+trophyService.init("blub").then(
+    () => {
+        console.log("success");
+    },
+    () => {
+        runMock(mainWindow);
+    }
 );
 
-trophiesController.init();
+function runMock(mainWindow: MainWindow): void {
+    console.log("Cannot connect to psn, run mock service.");
+    const trophiesController = new TrophiesController(
+        new TrophyServiceMock(),
+        mainWindow
+    );
 
-mainWindow.run();
+    trophiesController.init();
+    mainWindow.run();
+}
