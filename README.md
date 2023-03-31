@@ -19,6 +19,7 @@ In order to use this template and build a Node.js application, you need to insta
 From root of this projects run:
 
 ```sh
+npm install
 export SLINT_BACKEND=winit && npm start
 ```
 
