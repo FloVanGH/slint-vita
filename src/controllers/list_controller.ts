@@ -2,13 +2,11 @@
 // SPDX-License-Identifier: MIT
 
 import { type MainWindow, slint } from "../../ui-import";
-import { type ListItem } from "../data/list";
 import { type ListService } from "../services/interfaces/list_service";
 
 export class ListController {
     private readonly _service: ListService;
     private readonly _mainWindow: MainWindow;
-    private _selectedItem?: ListItem;
     private readonly _currentPage = 0;
 
     constructor(service: ListService, mainWindow: MainWindow) {
@@ -34,67 +32,67 @@ export class ListController {
     }
 
     private clearSelection(): void {
-        if (this._selectedItem === undefined) {
+        const list = this._service.listItems[this._currentPage];
+
+        if (list === undefined) {
             return;
         }
 
-        const index = this._service.listItems[this._currentPage].items.indexOf(
-            this._selectedItem
-        );
+        const oldSelectedIndex = list.unselect();
 
-        this._selectedItem.selected = false;
+        if (oldSelectedIndex < 0) {
+            return;
+        }
+
         this._mainWindow.list_items
             .rowData(this._currentPage)
-            .setRowData(index, this._selectedItem);
-        this._selectedItem = undefined;
+            .setRowData(oldSelectedIndex, list.items[oldSelectedIndex]);
     }
 
-    private select(listItem?: ListItem): boolean {
-        if (listItem === undefined || this._selectedItem === listItem) {
+    private select(index: number): boolean {
+        const list = this._service.listItems[this._currentPage];
+
+        if (list === undefined || index < 0 || index >= list.length) {
             return false;
         }
 
-        this.clearSelection();
+        const oldSelectedIndex = list.select(index);
 
-        listItem.selected = true;
-        this._selectedItem = listItem;
-
-        if (
-            this._currentPage < 0 ||
-            this._currentPage >= this._mainWindow.list_items.length
-        ) {
-            return false;
+        if (oldSelectedIndex >= 0) {
+            this._mainWindow.list_items
+                .rowData(this._currentPage)
+                .setRowData(oldSelectedIndex, list.items[oldSelectedIndex]);
         }
 
-        // todo add check (add extra method)
-        const index =
-            this._service.listItems[this._currentPage].items.indexOf(listItem);
+        const newSelectedItem = list.selectedItem;
+
+        if (newSelectedItem === null) {
+            return false;
+        }
 
         this._mainWindow.list_items
             .rowData(this._currentPage)
-            .setRowData(index, listItem);
+            .setRowData(index, newSelectedItem);
 
         return true;
     }
 
     private moveSelection(up: boolean): void {
-        if (this._selectedItem === undefined) {
-            this.select(this._service.listItems[this._currentPage].items[0]);
+        const list = this._service.listItems[this._currentPage];
+
+        if (list === undefined) {
             return;
         }
 
-        const index = this._service.listItems[this._currentPage].items.indexOf(
-            this._selectedItem
-        );
+        if (list.selectedItem === undefined) {
+            this.select(0);
+            return;
+        }
 
         if (up) {
-            this.select(
-                this._service.listItems[this._currentPage].items[index - 1]
-            );
+            this.select(list.selectedIndex - 1);
         } else {
-            this.select(
-                this._service.listItems[this._currentPage].items[index + 1]
-            );
+            this.select(list.selectedIndex + 1);
         }
     }
 
