@@ -15,6 +15,14 @@ export class ListController {
         this._mainWindow = mainWindow;
     }
 
+    public init(): void {
+        this.setHandlers();
+    }
+
+    private setHandlers(): void {
+        console.log("Set handlers");
+    }
+
     public displayItems(): void {
         const listItemsModel = new slint.ArrayModel([]);
         for (const list of this._service.listItems) {
@@ -41,7 +49,15 @@ export class ListController {
         return true;
     }
 
+    private moveSelection(up: boolean): void {
+        console.log("move selection");
+    }
+
     moveUp = (): void => {
-        console.log("blub");
+        this.moveSelection(true);
+    };
+
+    moveDown = (): void => {
+        this.moveSelection(false);
     };
 }

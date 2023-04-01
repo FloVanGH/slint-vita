@@ -35,6 +35,7 @@ if (process.env.PSN !== undefined && process.env.PSN !== "") {
                 trophyService,
                 mainWindow
             );
+            trophiesController.init();
 
             navigationService.registerListController(
                 view.trophies,
@@ -52,9 +53,11 @@ if (process.env.PSN !== undefined && process.env.PSN !== "") {
 }
 
 function runMock(navigationService, mainWindow: MainWindow): void {
-    navigationService.registerListController(
-        view.trophies,
-        new ListController(new TrophyServiceMock(), mainWindow)
+    const trophiesController = new ListController(
+        new TrophyServiceMock(),
+        mainWindow
     );
+    trophiesController.init();
+    navigationService.registerListController(view.trophies, trophiesController);
     mainWindow.run();
 }
