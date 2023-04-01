@@ -84,7 +84,7 @@ export class ListController {
             return;
         }
 
-        if (list.selectedItem === undefined) {
+        if (list.selectedIndex < 0) {
             this.select(0);
             return;
         }
