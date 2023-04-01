@@ -8,19 +8,23 @@ import { AppServiceMock } from "./services/mocks/app_service_mock";
 import { BubbleServiceMock } from "./services/mocks/bubble_service_mock";
 import { TrophyServiceMock } from "./services/mocks/trophy_service_mock";
 import { TrophyService } from "./services/trophy_service";
+import { NavigationService } from "./services/navigation_service";
+import * as view from "./keys/view";
 import * as dotenv from "dotenv";
 
-dotenv.config();
-
 const mainWindow = new MainWindow();
+
+const navigationService = new NavigationService();
 
 const launcherController = new LauncherController(
     new BubbleServiceMock(),
     new AppServiceMock(),
+    navigationService,
     mainWindow
 );
 
 launcherController.init();
+dotenv.config();
 
 if (process.env.PSN !== undefined && process.env.PSN !== "") {
     const trophyService = new TrophyService();
@@ -32,25 +36,25 @@ if (process.env.PSN !== undefined && process.env.PSN !== "") {
                 mainWindow
             );
 
-            trophiesController.init();
+            navigationService.registerListController(
+                view.trophies,
+                trophiesController
+            );
 
             mainWindow.run();
         },
         () => {
-            runMock(mainWindow);
+            runMock(navigationService, mainWindow);
         }
     );
 } else {
-    runMock(mainWindow);
+    runMock(navigationService, mainWindow);
 }
 
-function runMock(mainWindow: MainWindow): void {
-    console.log("Cannot connect to psn, run mock service.");
-    const trophiesController = new ListController(
-        new TrophyServiceMock(),
-        mainWindow
+function runMock(navigationService, mainWindow: MainWindow): void {
+    navigationService.registerListController(
+        view.trophies,
+        new ListController(new TrophyServiceMock(), mainWindow)
     );
-
-    trophiesController.init();
     mainWindow.run();
 }

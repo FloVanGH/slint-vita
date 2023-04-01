@@ -56,7 +56,7 @@ export global LauncherAdapter {
 
     in property <int> current-bubble-page: 0;
     in-out property <int> current-page: 0;
-    in property <bool> show-trophies;
+    in property <bool> show-list;
 
     // dummy callbacks for slint viewer
     move-right => {
@@ -165,10 +165,10 @@ export component LauncherView {
     AnimationContainer {
         width: 100%;
         height: 100%;
-        open: LauncherAdapter.show-trophies;
+        open: LauncherAdapter.show-list;
 
         // todo work without show trophies / need to be triggered by controller
-        if (LauncherAdapter.show-trophies) : ListView {
+        if (LauncherAdapter.show-list) : ListView {
             close => {
                 LauncherAdapter.close-trophies();
             }

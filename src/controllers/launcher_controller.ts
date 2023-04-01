@@ -5,6 +5,8 @@ import { type MainWindow, slint } from "../../ui-import";
 import { type Bubble } from "../data/bubble";
 import { type AppService } from "../services/interfaces/app_service";
 import { type BubbleService } from "../services/interfaces/bubble_service";
+import { type NavigationService } from "../services/interfaces/navigation_service";
+import * as view from "../keys/view";
 
 enum Direction {
     Left,
@@ -17,15 +19,18 @@ export class LauncherController {
     private readonly _appService: AppService;
     private readonly _bubbleService: BubbleService;
     private readonly _mainWindow: MainWindow;
+    private readonly _navigationService: NavigationService;
     private _selectedBubble?: Bubble;
 
     constructor(
         bubbleService: BubbleService,
         appService: AppService,
+        navigationService: NavigationService,
         mainWindow: MainWindow
     ) {
         this._bubbleService = bubbleService;
         this._appService = appService;
+        this._navigationService = navigationService;
         this._mainWindow = mainWindow;
         this._selectedBubble = undefined;
     }
@@ -333,12 +338,13 @@ export class LauncherController {
     };
 
     openApp = (key: string): void => {
-        if (key === "Trophies") {
-            this._mainWindow.launcher_show_trophies = true;
+        if (key === view.trophies) {
+            this._mainWindow.launcher_show_list =
+                this._navigationService.show(key);
         }
     };
 
     closeTrophies = (): void => {
-        this._mainWindow.launcher_show_trophies = false;
+        this._mainWindow.launcher_show_list = false;
     };
 }

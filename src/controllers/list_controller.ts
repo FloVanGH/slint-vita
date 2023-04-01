@@ -13,7 +13,7 @@ export class ListController {
         this._mainWindow = mainWindow;
     }
 
-    public init(): void {
+    public displayItems(): void {
         const listItemsModel = new slint.ArrayModel([]);
         for (const list of this._service.listItems) {
             listItemsModel.push(new slint.ArrayModel(list.items));
