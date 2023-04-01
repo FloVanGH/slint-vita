@@ -1,16 +1,20 @@
 // SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
-import { Game } from "../../data/game";
-import { type TrophyService } from "../interfaces/trophy_service";
+import { List, ListItem } from "../../data/list";
+import { type ListService } from "../interfaces/list_service";
 
-export class TrophyServiceMock implements TrophyService {
-    private readonly _games: Game[] = [
-        new Game("The Last of Us"),
-        new Game("Gravity Rush"),
-    ];
+export class TrophyServiceMock implements ListService {
+    private readonly _listItems: List[] = [];
 
-    get games(): Game[] {
-        return this._games;
+    constructor() {
+        const trophies = new List();
+        trophies.push(new ListItem("The last of us"));
+        trophies.push(new ListItem("Gravity rush."));
+        this._listItems.push(trophies);
+    }
+
+    get listItems(): List[] {
+        return this._listItems;
     }
 }

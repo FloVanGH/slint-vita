@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import { Bubble, BubbleLauncher, PageScrollView, Page, PageItem, Pageination, AnimationContainer } from "../widgets/widgets.slint";
-import { TrophiesView } from "trophies_view.slint";
+import { ListView } from "list_view.slint";
 import { Theme } from "../styling/theme.slint";
 
 export global LauncherAdapter {
@@ -167,7 +167,7 @@ export component LauncherView {
         height: 100%;
         open: LauncherAdapter.show-trophies;
 
-        if (LauncherAdapter.show-trophies) : TrophiesView {
+        if (LauncherAdapter.show-trophies) : ListView {
             close => {
                 LauncherAdapter.close-trophies();
             }

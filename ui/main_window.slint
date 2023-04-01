@@ -4,9 +4,9 @@
 import { Theme } from "styling/theme.slint";
 import { StateArea, BubbleLauncher, Bubble, Pageination, PageScrollView, PageItem, Page } from "widgets/widgets.slint";
 
-import { LauncherView, LauncherAdapter, TrophiesAdapter, Game } from "views/views.slint";
+import { LauncherView, LauncherAdapter, ListAdapter, ListItem } from "views/views.slint";
 
-export { LauncherAdapter, TrophiesAdapter }
+export { LauncherAdapter, ListAdapter }
 
 export component MainWindow inherits Window {
     // launcher callback
@@ -33,7 +33,7 @@ export component MainWindow inherits Window {
     in property <bool> launcher-show-trophies <=> LauncherAdapter.show-trophies;
 
     // trophies properties
-    in property <[Game]> trophies-games <=> TrophiesAdapter.games;
+    in property <[[ListItem]]> list-items <=> ListAdapter.list-items;
 
     title: "vita";
     width: 960px;

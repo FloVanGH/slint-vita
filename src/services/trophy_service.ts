@@ -6,11 +6,11 @@ import {
     exchangeNpssoForCode,
     getUserTitles,
 } from "psn-api";
-import { Game } from "../data/game";
-import type * as trophy from "./interfaces/trophy_service";
+import { List, ListItem } from "../data/list";
+import { type ListService } from "./interfaces/list_service";
 
-export class TrophyService implements trophy.TrophyService {
-    private readonly _games: Game[] = [];
+export class TrophyService implements ListService {
+    private readonly _listItems: List[] = [];
 
     public async init(psnKey: string): Promise<void> {
         const accessCode = await exchangeNpssoForCode(psnKey);
@@ -20,12 +20,15 @@ export class TrophyService implements trophy.TrophyService {
             "me"
         );
 
+        const trophyTitlesList = new List();
         trophyTitlesResponse.trophyTitles.forEach((t) => {
-            this._games.push(new Game(t.trophyTitleName));
+            trophyTitlesList.push(new ListItem(t.trophyTitleName));
         });
+
+        this._listItems.push(trophyTitlesList);
     }
 
-    get games(): Game[] {
-        return this._games;
+    get listItems(): List[] {
+        return this._listItems;
     }
 }

@@ -3,7 +3,7 @@
 
 import { MainWindow } from "../ui-import";
 import { LauncherController } from "./controllers/launcher_controller";
-import { TrophiesController } from "./controllers/trophies_controller";
+import { ListController } from "./controllers/list_controller";
 import { AppServiceMock } from "./services/mocks/app_service_mock";
 import { BubbleServiceMock } from "./services/mocks/bubble_service_mock";
 import { TrophyServiceMock } from "./services/mocks/trophy_service_mock";
@@ -27,7 +27,7 @@ if (process.env.PSN !== undefined && process.env.PSN !== "") {
     trophyService.init(process.env.PSN).then(
         () => {
             console.log("Run psn service");
-            const trophiesController = new TrophiesController(
+            const trophiesController = new ListController(
                 trophyService,
                 mainWindow
             );
@@ -46,7 +46,7 @@ if (process.env.PSN !== undefined && process.env.PSN !== "") {
 
 function runMock(mainWindow: MainWindow): void {
     console.log("Cannot connect to psn, run mock service.");
-    const trophiesController = new TrophiesController(
+    const trophiesController = new ListController(
         new TrophyServiceMock(),
         mainWindow
     );
