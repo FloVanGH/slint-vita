@@ -167,6 +167,7 @@ export component LauncherView {
         height: 100%;
         open: LauncherAdapter.show-trophies;
 
+        // todo work without show trophies / need to be triggered by controller
         if (LauncherAdapter.show-trophies) : ListView {
             close => {
                 LauncherAdapter.close-trophies();
