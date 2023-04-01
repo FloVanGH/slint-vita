@@ -2,12 +2,14 @@
 // SPDX-License-Identifier: MIT
 
 export class ListItem {
-    constructor(title: string) {
+    constructor(title: string, image: string) {
         this.title = title;
         this.selected = false;
+        this.image = image;
     }
 
     public title: string;
+    public image: string;
     public selected: boolean;
 }
 

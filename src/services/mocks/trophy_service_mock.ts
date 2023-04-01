@@ -9,8 +9,8 @@ export class TrophyServiceMock implements ListService {
 
     constructor() {
         const trophies = new List();
-        trophies.push(new ListItem("The last of us"));
-        trophies.push(new ListItem("Gravity rush."));
+        trophies.push(new ListItem("The last of us", "minetest.png"));
+        trophies.push(new ListItem("Gravity rush.", "minetest.png"));
         this._listItems.push(trophies);
     }
 

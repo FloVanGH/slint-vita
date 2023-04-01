@@ -6,7 +6,8 @@ import { Theme } from "../styling/theme.slint";
 
 export struct ListItem {
     title: string,
-    selected: bool
+    selected: bool,
+    image: image
 }
 
 export component ListViewItem {
@@ -14,6 +15,7 @@ export component ListViewItem {
 
     in property <string> text <=> i-text.text;
     in property <bool> selected <=> i-state-area.has-focus;
+    in property <image> image <=> i-image.source;
 
     min-height: 64px;
 
@@ -38,6 +40,8 @@ export component ListViewItem {
         padding-left: Theme.spacings.large;
         padding-right: Theme.spacings.large;
         spacing: Theme.spacings.medium;
+
+        i-image := Image {}
 
         i-text := Text {
             color: Theme.palette.foreground-brush;
@@ -83,6 +87,7 @@ export component ListView {
                         for item[index] in list : ListViewItem {
                             text: item.title;
                             selected: item.selected;
+                            image: item.image;
                         }
                     }
                 }
