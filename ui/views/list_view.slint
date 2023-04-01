@@ -51,6 +51,8 @@ export component ListViewItem {
 
 export global ListAdapter {
     callback item-clicked(int /* index */);
+    callback move-up();
+    callback move-down();
 
     in property <[[ListItem]]> list-items;
 }

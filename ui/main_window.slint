@@ -23,7 +23,9 @@ export component MainWindow inherits Window {
     callback launcher-open-app <=> LauncherAdapter.open-app;
     callback launcher-close-trophies <=> LauncherAdapter.close-trophies;
 
-    // trophies callbacks
+    // list callbacks
+    callback list-move-up <=> ListAdapter.move-up;
+    callback list-move-down <=> ListAdapter.move-down;
 
     // launcher properties
     in property <[[Bubble]]> launcher-bubbles <=> LauncherAdapter.bubbles;
@@ -32,7 +34,7 @@ export component MainWindow inherits Window {
     in property <int> launcher-current-page <=> LauncherAdapter.current-page;
     in property <bool> launcher-show-list <=> LauncherAdapter.show-list;
 
-    // trophies properties
+    // list properties
     in property <[[ListItem]]> list-items <=> ListAdapter.list-items;
 
     title: "vita";

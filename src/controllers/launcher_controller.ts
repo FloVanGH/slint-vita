@@ -80,7 +80,7 @@ export class LauncherController {
         this._mainWindow.launcher_move_right.setHandler(this.moveRight);
         this._mainWindow.launcher_on_enter.setHandler(this.onEnter);
         this._mainWindow.launcher_open_app.setHandler(this.openApp);
-        this._mainWindow.launcher_close_trophies.setHandler(this.closeTrophies);
+        this._mainWindow.launcher_close_trophies.setHandler(this.closeList);
     }
 
     private clearSelection(): void {
@@ -344,7 +344,7 @@ export class LauncherController {
         }
     };
 
-    closeTrophies = (): void => {
+    closeList = (): void => {
         this._mainWindow.launcher_show_list = false;
     };
 }

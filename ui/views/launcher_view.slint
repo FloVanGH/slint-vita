@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import { Bubble, BubbleLauncher, PageScrollView, Page, PageItem, Pageination, AnimationContainer } from "../widgets/widgets.slint";
-import { ListView } from "list_view.slint";
+import { ListView, ListAdapter } from "list_view.slint";
 import { Theme } from "../styling/theme.slint";
 
 export global LauncherAdapter {
@@ -131,6 +131,19 @@ export component LauncherView {
         width: 0px;
 
         key-pressed(e) => {
+            if(LauncherAdapter.show-list) {
+                if (e.text == Key.UpArrow) {
+                    ListAdapter.move-up();
+                    return accept;
+                }
+
+                if (e.text == Key.DownArrow) {
+                    ListAdapter.move-down();
+                    return accept;
+                }
+                return reject;
+            }
+
             if (e.text == Key.Escape) {
                 LauncherAdapter.clear-selection();
                 return accept;
