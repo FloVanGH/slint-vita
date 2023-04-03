@@ -149,7 +149,7 @@ export component BubbleLauncher {
                 }
             }
 
-            animate y { duration: Theme.animations.fast;  }
+            animate y { duration: 2 * Theme.animations.medium; easing: cubic-bezier(0.05, 0.7, 0.1, 1.0);  }
         }
     }
 }

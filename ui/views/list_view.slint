@@ -29,7 +29,7 @@ export component ListViewItem {
     in property <bool> has-details;
     in property <bool> decent;
 
-    min-height: 64px;
+    min-height: 62px;
     opacity: decent ? 0.6 : 1.0;
 
     Rectangle {
@@ -67,7 +67,6 @@ export component ListViewItem {
             i-text := Text {
                 color: Theme.palette.foreground-brush;
                 horizontal-alignment: left;
-                vertical-alignment: center;
                 font-size: Theme.typo.label-list-title.font-size;
             }
 
@@ -75,7 +74,6 @@ export component ListViewItem {
                 text: root.description;
                 color: Theme.palette.foreground-brush;
                 horizontal-alignment: left;
-                vertical-alignment: center;
                 font-size: Theme.typo.label-list-description.font-size;
             }
 
@@ -83,7 +81,6 @@ export component ListViewItem {
                 text: root.additional-description;
                 color: Theme.palette.foreground-brush;
                 horizontal-alignment: left;
-                vertical-alignment: center;
                 font-size: Theme.typo.label-list-description.font-size;
             }
         }
