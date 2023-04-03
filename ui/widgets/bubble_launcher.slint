@@ -17,6 +17,10 @@ component BubbleItem {
     height: Theme.sizes.bubble;
 
     i-container := Rectangle {
+        x: (parent.width - self.width) / 2;
+        y: (parent.height - self.height) / 2;
+        width: 100%;
+        height: 100%;
         visible: !root.filler;
         clip: true;
         border-radius: max(self.width, self.height) / 2;
@@ -27,6 +31,8 @@ component BubbleItem {
             height: 100%;
             image-fit: fill;
         }
+
+        animate width, height { duration: 2 * Theme.animations.medium; easing: cubic-bezier(0.05, 0.7, 0.1, 1.0);  }
     }
 
     i-text := Text {
@@ -37,8 +43,19 @@ component BubbleItem {
     }
 
     i-state-area := StateArea {
+        x: i-container.x;
+        y: i-container.y;
+        width: i-container.width;
+        height: i-container.height;
         border-radius: i-container.border-radius;
     }
+
+    states [
+        pressed when i-state-area.pressed : {
+            i-container.width: 110%;
+            i-container.height: 110%;
+        }
+    ]
 }
 
 export struct Bubble {
