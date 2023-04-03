@@ -22,7 +22,7 @@ export component PageScrollView {
 
         @children
 
-        animate x { duration: Theme.animations.medium;  }
+        animate x { duration: 2 * Theme.animations.medium; easing: cubic-bezier(0.05, 0.7, 0.1, 1.0);  }
     }
 
     if(root.current-page > 0) : PathButton {
