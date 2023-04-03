@@ -16,6 +16,10 @@ export class TrophyServiceMock implements ListService {
         return undefined;
     }
 
+    get masterTitle(): string {
+        return this.title;
+    }
+
     readonly title = "Trophies";
     readonly background = "#000000";
 

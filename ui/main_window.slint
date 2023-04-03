@@ -2,11 +2,12 @@
 // SPDX-License-Identifier: MIT
 
 import { Theme } from "styling/theme.slint";
+import { Icons } from "styling/icons.slint";
 import { StateArea, BubbleLauncher, Bubble, Pageination, PageScrollView, PageItem } from "widgets/widgets.slint";
 
-import { LauncherView, LauncherAdapter, ListAdapter, ListItem } from "views/views.slint";
+import { LauncherView, LauncherAdapter, ListAdapter, ListItem, AppBarAdapter } from "views/views.slint";
 
-export { LauncherAdapter, ListAdapter }
+export { LauncherAdapter, ListAdapter, AppBarAdapter, Icons }
 
 export component MainWindow inherits Window {
     // launcher callback
@@ -29,6 +30,8 @@ export component MainWindow inherits Window {
     callback list-move-up <=> ListAdapter.move-up;
     callback list-move-down <=> ListAdapter.move-down;
     callback list-show-details <=> ListAdapter.show-details;
+    callback list-move-left <=> ListAdapter.move-left;
+    callback list-on-enter <=> ListAdapter.on-enter;
 
     // launcher properties
     in property <[[Bubble]]> launcher-bubbles <=> LauncherAdapter.bubbles;
@@ -41,6 +44,11 @@ export component MainWindow inherits Window {
     in property <[[ListItem]]> list-items <=> ListAdapter.list-items;
     in property <string> list-title <=> ListAdapter.title;
     in property <brush> list-background <=> ListAdapter.background;
+    in property <int> list-current-page <=> ListAdapter.current-page;
+    in property <string> list-sub-title <=> ListAdapter.sub-title;
+
+    // app bar properties
+    in property <string> app-bar-current-time <=> AppBarAdapter.current-time;
 
     title: "vita";
     width: 960px;

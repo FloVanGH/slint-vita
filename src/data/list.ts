@@ -12,11 +12,18 @@ export class ListItem {
     public title: string;
     public id: string;
     public description: string;
+    public additional_description = "";
     public selected: boolean;
+    public icon = "";
+    public icon_color = "#ffffff";
+    public has_details = false;
+    public decent = false;
 }
 
 export class List {
     private _selectedIndex = -1;
+    public title = "";
+    public subTitle = "";
 
     public push(item: ListItem): void {
         this.items.push(item);

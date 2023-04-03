@@ -31,6 +31,7 @@ component BubbleItem {
 
     i-text := Text {
         color: Theme.palette.foreground-brush;
+        font-size: Theme.typo.label-list-description.font-size;
         horizontal-alignment: center;
         y: root.height;
     }
@@ -63,7 +64,7 @@ export component BubblePageItem {
     private property <length> odd-x:
     (root.width - odd-columns * Theme.sizes.bubble - ((odd-columns - 1) * root.hor-spacing)) / 2;
     private property <length> start-y:
-        (root.height - rows * Theme.sizes.bubble - ((rows - 1) * root.ver-spacing)) / 2;
+        (root.height - (rows * (Theme.sizes.bubble + Theme.typo.label-list-description.font-size) + ((rows - 1) * root.ver-spacing))) / 2;
 
     callback item-clicked(string /* index */);
 

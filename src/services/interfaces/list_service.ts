@@ -5,7 +5,6 @@ import { type List } from "../../data/list";
 
 export interface ListService {
     get masterItems(): List;
-    get title(): string;
     get background(): string;
 
     detailsItems: (id: string) => List | undefined;

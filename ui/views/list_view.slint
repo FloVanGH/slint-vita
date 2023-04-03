@@ -1,14 +1,20 @@
 // SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
-import { Container, PageScrollView, StateArea } from "../widgets/widgets.slint";
+import { Container, PageScrollView, StateArea, Icon } from "../widgets/widgets.slint";
 import { Theme } from "../styling/theme.slint";
 import { Paths } from "../styling/paths.slint";
 
 export struct ListItem {
     title: string,
+    id: string,
     description: string,
-    selected: bool
+    additional-description: string,
+    selected: bool,
+    icon: string,
+    icon-color: brush,
+    has-details: bool,
+    decent: bool
 }
 
 export component ListViewItem {
@@ -16,9 +22,15 @@ export component ListViewItem {
 
     in property <string> text <=> i-text.text;
     in property <string> description;
+    in property <string> additional-description;
     in property <bool> selected <=> i-state-area.has-focus;
+    in property <string> icon;
+    in property <brush> icon-color;
+    in property <bool> has-details;
+    in property <bool> decent;
 
     min-height: 64px;
+    opacity: decent ? 0.6 : 1.0;
 
     Rectangle {
         x: 0;
@@ -42,7 +54,13 @@ export component ListViewItem {
         padding-right: 32px;
         spacing: Theme.spacings.medium;
 
-        VerticalLayout {
+        if (root.icon != "") : Icon {
+            text: root.icon;
+            vertical-alignment: center;
+            color: root.icon-color;
+        }
+
+        i-layout := VerticalLayout {
             horizontal-stretch: 1;
             alignment: center;
 
@@ -53,8 +71,16 @@ export component ListViewItem {
                 font-size: Theme.typo.label-list-title.font-size;
             }
 
-            if (description != "") : Text {
+            if (root.description != "") : Text {
                 text: root.description;
+                color: Theme.palette.foreground-brush;
+                horizontal-alignment: left;
+                vertical-alignment: center;
+                font-size: Theme.typo.label-list-description.font-size;
+            }
+
+            if (root.additional-description != "") : Text {
+                text: root.additional-description;
                 color: Theme.palette.foreground-brush;
                 horizontal-alignment: left;
                 vertical-alignment: center;
@@ -62,7 +88,7 @@ export component ListViewItem {
             }
         }
 
-        Path {
+        if (root.has-details) : Path {
             min-width: 32px;
             height: self.width;
             horizontal-stretch: 0;
@@ -79,14 +105,18 @@ export component ListViewItem {
 }
 
 export global ListAdapter {
-    callback show-details(int /* index */);
+    callback show-details(ListItem /* item */);
     callback move-up();
     callback move-down();
+    callback move-left();
+    callback on-enter();
 
     in property <[[ListItem]]> list-items;
     in-out property <length> item-height;
     in property <string> title;
     in property <brush> background;
+    in property <int> current-page;
+    in property <string> sub-title;
 }
 
 export component ListView {
@@ -101,17 +131,30 @@ export component ListView {
             padding-top: 32px;
 
             Text {
+                x: 64px;
                 vertical-stretch: 0;
                 color: Theme.palette.foreground-brush;
                 font-size: Theme.typo.label-list-title.font-size;
-                horizontal-alignment: center;
-                vertical-alignment: center;
                 text: ListAdapter.title;
+            }
+
+            Text {
+                x: 64px;
+                vertical-stretch: 0;
+                color: Theme.palette.foreground-brush;
+                font-size: Theme.typo.label-list-description.font-size;
+                text: ListAdapter.sub-title;
             }
 
             i-page-scroll-view := PageScrollView {
                 width: 100%;
                 vertical-stretch: 1;
+                current-page <=> ListAdapter.current-page;
+                count: ListAdapter.list-items.length;
+
+                move-left => {
+                    ListAdapter.move-left();
+                }
 
                 HorizontalLayout {
                     for list[list-index] in ListAdapter.list-items : Flickable {
@@ -120,17 +163,22 @@ export component ListView {
 
                         VerticalLayout {
                             padding-top: 32px;
-                            padding-left: 32px;
-                            padding-right: 32px;
+                            padding-left: 64px;
+                            padding-right: 64px;
                             alignment: start;
 
                             for item[index] in list : ListViewItem {
                                 text: item.title;
                                 selected: item.selected;
                                 description: item.description;
+                                icon: item.icon;
+                                icon-color: item.icon-color;
+                                has-details: item.has-details;
+                                additional-description: item.additional-description;
+                                decent: item.decent;
 
                                 clicked => {
-                                    ListAdapter.show-details(index);
+                                    ListAdapter.show-details(item);
                                 }
                             }
                         }

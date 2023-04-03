@@ -6,6 +6,7 @@ import { Bubble, BubbleLauncher, PageScrollView, PageItem, Pageination, Animatio
 import { ListView, ListAdapter } from "list_view.slint";
 import { Theme } from "../styling/theme.slint";
 import { Paths } from "../styling/paths.slint";
+import { AppBarView } from "app_bar_view.slint";
 
 export global LauncherAdapter {
     callback move-selection-left();
@@ -81,53 +82,89 @@ export component LauncherView {
     preferred-width: 100%;
     preferred-height: 100%;
 
-    i-page-scroll-view := PageScrollView {
-        // 1 for the bubbles as first page
-        count: 1 + LauncherAdapter.pages.length;
-        current-page <=> LauncherAdapter.current-page;
+    VerticalLayout {
+        height: 100%;
 
-        move-left => {
-            LauncherAdapter.move-left();
+        AppBarView {
+            vertical-stretch: 0;
         }
 
-        move-right => {
-            LauncherAdapter.move-right();
-        }
+        Rectangle {
+            vertical-stretch: 1;
 
-        // bubbles
-        HorizontalLayout {
-            padding-left: Theme.spacings.medium;
-            width: root.width;
-            height: root.height;
+            i-page-scroll-view := PageScrollView {
+                // 1 for the bubbles as first page
+                count: 1 + LauncherAdapter.pages.length;
+                current-page <=> LauncherAdapter.current-page;
 
-            i-pageination := Pageination {
-                count: LauncherAdapter.bubbles.length;
-                selected-index: LauncherAdapter.current-bubble-page;
-            }
+                move-left => {
+                    LauncherAdapter.move-left();
+                }
 
-            i-bubble-launcher := BubbleLauncher {
-                model: LauncherAdapter.bubbles;
-                current-page <=> LauncherAdapter.current-bubble-page;
+                move-right => {
+                    LauncherAdapter.move-right();
+                }
 
-                bubble-clicked(id) => {
-                    LauncherAdapter.open-page(id);
+                // bubbles
+                HorizontalLayout {
+                    padding-left: Theme.spacings.medium;
+                    width: root.width;
+                    height: root.height;
+
+                    i-pageination := Pageination {
+                        count: LauncherAdapter.bubbles.length;
+                        selected-index: LauncherAdapter.current-bubble-page;
+                    }
+
+                    i-bubble-launcher := BubbleLauncher {
+                        model: LauncherAdapter.bubbles;
+                        current-page <=> LauncherAdapter.current-bubble-page;
+
+                        bubble-clicked(id) => {
+                            LauncherAdapter.open-page(id);
+                        }
+                    }
+                }
+
+                for page in LauncherAdapter.pages : PageItem {
+                    width: root.width;
+                    height: root.height;
+                    title: page.title;
+                    background: page.background;
+                    button-image: page.icon;
+
+                    clicked => {
+                        LauncherAdapter.open-app(page.title);
+                    }
+
+                    close => {
+                        LauncherAdapter.close-current-page();
+                    }
                 }
             }
-        }
 
-        for page in LauncherAdapter.pages : PageItem {
-            width: root.width;
-            height: root.height;
-            title: page.title;
-            background: page.background;
-            button-image: page.icon;
+            if (LauncherAdapter.bubbles.length > 0 && LauncherAdapter.current-bubble-page > 0
+                && LauncherAdapter.current-page == 0) : PathButton {
+                x: (root.width - self.width) / 2;
+                y: Theme.spacings.large;
+                path: Paths.triangle-up;
+                fill: Theme.palette.white-up-gradient;
 
-            clicked => {
-                LauncherAdapter.open-app(page.title);
+                clicked => {
+                    LauncherAdapter.move-up();
+                }
             }
 
-            close => {
-                LauncherAdapter.close-current-page();
+            if (LauncherAdapter.bubbles.length > 0 && LauncherAdapter.current-bubble-page < LauncherAdapter.bubbles.length - 1
+                    && LauncherAdapter.current-page == 0) : PathButton {
+                x: (root.width - self.width) / 2;
+                y: parent.height - self.height - Theme.spacings.large;
+                path: Paths.triangle-down;
+                fill: Theme.palette.white-down-gradient;
+
+                clicked => {
+                    LauncherAdapter.move-down();
+                }
             }
         }
     }
@@ -144,6 +181,15 @@ export component LauncherView {
 
                 if (e.text == Key.DownArrow) {
                     ListAdapter.move-down();
+                    return accept;
+                }
+
+                if (e.text == Key.LeftArrow) {
+                    ListAdapter.move-left();
+                    return accept;
+                }
+                if (e.text == Key.Return) {
+                    ListAdapter.on-enter();
                     return accept;
                 }
                 return reject;
@@ -192,30 +238,6 @@ export component LauncherView {
             close => {
                 LauncherAdapter.close-trophies();
             }
-        }
-    }
-
-    if (LauncherAdapter.bubbles.length > 0 && LauncherAdapter.current-bubble-page > 0
-        && LauncherAdapter.current-page == 0) : PathButton {
-        x: (root.width - self.width) / 2;
-        y: Theme.spacings.large;
-        path: Paths.triangle-up;
-        fill: Theme.palette.white-up-gradient;
-
-        clicked => {
-            LauncherAdapter.move-up();
-        }
-    }
-
-    if (LauncherAdapter.bubbles.length > 0 && LauncherAdapter.current-bubble-page < LauncherAdapter.bubbles.length - 1
-            && LauncherAdapter.current-page == 0) : PathButton {
-        x: (root.width - self.width) / 2;
-        y: root.height - self.height - Theme.spacings.large;
-        path: Paths.triangle-down;
-        fill: Theme.palette.white-down-gradient;
-
-        clicked => {
-            LauncherAdapter.move-down();
         }
     }
 }

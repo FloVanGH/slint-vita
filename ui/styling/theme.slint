@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
+import "../assets/forkawesome-webfont.ttf";
+
 struct Spacings {
     small: length,
     medium: length,
@@ -31,7 +33,8 @@ struct Palette {
     focus-surface-brush: brush,
     pressed-surface-brush: brush,
     border-brush: brush,
-    foreground-brush: brush
+    foreground-brush: brush,
+    app-bar-brush: brush
 }
 
 struct Label {
@@ -74,7 +77,8 @@ export global Theme {
         focus-surface-brush: #32edff80,
         pressed-surface-brush: #ffffff80,
         border-brush: #ffffff,
-        foreground-brush: #ffffff
+        foreground-brush: #ffffff,
+        app-bar-brush: #000000
     };
 
     out property <Typo> typo: {
