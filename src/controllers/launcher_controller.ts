@@ -179,11 +179,16 @@ export class LauncherController {
                 break;
             }
             case Direction.Right: {
-                this.select(
-                    currentPage
-                        .filter((b) => b.row === currentRow)
-                        .find((b) => b.column > currentColumn)
-                );
+                if (
+                    this._mainWindow.launcher_current_page > 0 ||
+                    !this.select(
+                        currentPage
+                            .filter((b) => b.row === currentRow)
+                            .find((b) => b.column > currentColumn)
+                    )
+                ) {
+                    this.moveRight();
+                }
                 break;
             }
             case Direction.Up: {
@@ -284,6 +289,8 @@ export class LauncherController {
             return;
         }
 
+        this.clearSelection();
+
         for (const page of this._mainWindow.launcher_pages.entries()) {
             if (page[1].title === key) {
                 // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
@@ -305,7 +312,6 @@ export class LauncherController {
         // it's ok to use length instead of length -1 because there is also the bubble page
         this._mainWindow.launcher_current_page =
             this._mainWindow.launcher_pages.length;
-        this.clearSelection();
     };
 
     closeCurrentPage = (): void => {

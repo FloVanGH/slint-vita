@@ -195,6 +195,20 @@ export component LauncherView {
                 return reject;
             }
 
+            if (LauncherAdapter.current-page > 0) {
+                if (e.text == Key.LeftArrow) {
+                    LauncherAdapter.move-left();
+                    return accept;
+                }
+
+                if (e.text == Key.RightArrow) {
+                    LauncherAdapter.move-right();
+                    return accept;
+                }
+
+                return reject;
+            }
+
             if (e.text == Key.Escape) {
                 LauncherAdapter.clear-selection();
                 return accept;
