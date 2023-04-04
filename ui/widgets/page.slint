@@ -12,6 +12,7 @@ export component PageItem {
     in property <string> title;
     in property <brush> background: red;
     in property <image> button-image <=> i-image-button.background-image;
+    in property <bool> selected <=> i-image-button.selected;
 
     i-container := Container {
         x: Theme.spacings.extra-large;

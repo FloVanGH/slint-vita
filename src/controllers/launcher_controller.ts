@@ -353,6 +353,14 @@ export class LauncherController {
     };
 
     onEnter = (): void => {
+        if (this._mainWindow.launcher_current_page > 0) {
+            this.openApp(
+                this._mainWindow.launcher_pages.rowData(
+                    this._mainWindow.launcher_current_page - 1
+                ).title
+            );
+            return;
+        }
         if (this._selectedBubble === undefined) {
             return;
         }

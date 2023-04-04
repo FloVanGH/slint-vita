@@ -126,12 +126,13 @@ export component LauncherView {
                     }
                 }
 
-                for page in LauncherAdapter.pages : PageItem {
+                for page[index] in LauncherAdapter.pages : PageItem {
                     width: root.width;
                     height: root.height;
                     title: page.title;
                     background: page.background;
                     button-image: page.icon;
+                    selected: index == LauncherAdapter.current-page - 1;
 
                     clicked => {
                         LauncherAdapter.open-app(page.title);
@@ -203,6 +204,11 @@ export component LauncherView {
 
                 if (e.text == Key.RightArrow) {
                     LauncherAdapter.move-right();
+                    return accept;
+                }
+
+                if (e.text == Key.Return) {
+                    LauncherAdapter.on-enter();
                     return accept;
                 }
 

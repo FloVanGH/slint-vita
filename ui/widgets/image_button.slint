@@ -8,6 +8,7 @@ export component ImageButton {
     callback clicked <=> i-state-area.clicked;
 
     in property <image> background-image <=> i-image.source;
+    in property <bool> selected <=> i-state-area.has-focus;
 
     min-width: 256px;
     min-height: 112px;
