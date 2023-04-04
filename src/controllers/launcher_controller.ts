@@ -78,7 +78,7 @@ export class LauncherController {
         this._mainWindow.launcher_move_down.setHandler(this.moveDown);
         this._mainWindow.launcher_on_enter.setHandler(this.onEnter);
         this._mainWindow.launcher_open_app.setHandler(this.openApp);
-        this._mainWindow.launcher_close_trophies.setHandler(this.closeList);
+        this._mainWindow.launcher_close_list.setHandler(this.closeList);
     }
 
     private clearSelection(): void {
@@ -320,7 +320,6 @@ export class LauncherController {
         }
 
         this.moveLeft();
-        console.log(this._mainWindow.launcher_current_page);
         this._mainWindow.launcher_pages.remove(
             // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
             this._mainWindow.launcher_current_page,

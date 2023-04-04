@@ -22,7 +22,7 @@ export global LauncherAdapter {
     callback move-down();
     callback on-enter();
     callback open-app(string /* id */);
-    callback close-trophies();
+    callback close-list();
 
     in property <[[Bubble]]> bubbles: [
         [
@@ -121,6 +121,10 @@ export component LauncherView {
                         current-page <=> LauncherAdapter.current-bubble-page;
 
                         bubble-clicked(id) => {
+                            if (i-page-scroll-view.viewport-x < 0) {
+                                return;
+                            }
+
                             LauncherAdapter.open-page(id);
                         }
                     }
@@ -193,6 +197,9 @@ export component LauncherView {
                     ListAdapter.on-enter();
                     return accept;
                 }
+                if (e.text == Key.Escape) {
+                    LauncherAdapter.close-list();
+                }
                 return reject;
             }
 
@@ -256,7 +263,7 @@ export component LauncherView {
             preferred-height: 100%;
 
             close => {
-                LauncherAdapter.close-trophies();
+                LauncherAdapter.close-list();
             }
         }
     }

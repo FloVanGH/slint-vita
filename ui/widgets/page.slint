@@ -14,6 +14,12 @@ export component PageItem {
     in property <image> button-image <=> i-image-button.background-image;
     in property <bool> selected <=> i-image-button.selected;
 
+    // prevent click through
+    TouchArea {
+        width: 100%;
+        height: 100%;
+    }
+
     i-container := Container {
         x: Theme.spacings.extra-large;
         y: Theme.spacings.large;

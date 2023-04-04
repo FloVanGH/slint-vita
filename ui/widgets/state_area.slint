@@ -10,10 +10,16 @@ export component StateArea {
     private property <float> state-opacity: animate-state ?  abs(sin(360deg * animation-tick() / animation)) : 0;
 
     callback clicked <=> i-touch-area.clicked;
+    callback moved <=> i-touch-area.moved;
+    callback pointer-event <=> i-touch-area.pointer-event;
 
     out property <bool> pressed <=> i-touch-area.pressed;
     in property <length> border-radius;
     in property <bool> has-focus;
+    out property <length> mouse-x <=> i-touch-area.mouse-x;
+    out property <length> mouse-y <=> i-touch-area.mouse-y;
+    out property <length> pressed-x <=> i-touch-area.pressed-x;
+    out property <length> pressed-y <=> i-touch-area.pressed-y;
 
     preferred-width: 100%;
     preferred-height: 100%;
