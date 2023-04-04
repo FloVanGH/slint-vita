@@ -1,8 +1,12 @@
-// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
-import { Bubble, BubbleLauncher, PageScrollView, Page, PageItem, Pageination } from "../widgets/widgets.slint";
+import { Bubble, BubbleLauncher, PageScrollView, PageItem, Pageination, AnimationContainer,
+    PathButton } from "../widgets/widgets.slint";
+import { ListView, ListAdapter } from "list_view.slint";
 import { Theme } from "../styling/theme.slint";
+import { Paths } from "../styling/paths.slint";
+import { AppBarView } from "app_bar_view.slint";
 
 export global LauncherAdapter {
     callback move-selection-left();
@@ -14,46 +18,50 @@ export global LauncherAdapter {
     callback close-current-page();
     callback move-left();
     callback move-right();
+    callback move-up();
+    callback move-down();
     callback on-enter();
     callback open-app(string /* id */);
+    callback close-list();
 
     in property <[[Bubble]]> bubbles: [
         [
-            { title: "Minetest", icon: @image-url("minetest.png"), row: 0, column: 0 },
-            { title: "Trophies", row: 0, column: 1 },
-            { title: "Item 3", row: 0, column: 2 },
-            { title: "Item 4", row: 1, column: 0 },
-            { title: "Item 5", row: 1, column: 1 },
-            { title: "Item 6", row: 1, column: 2 },
-            { title: "Item 7", row: 1, column: 3 },
-            { title: "Item 8", row: 2, column: 0 },
-            { title: "Item 9", row: 2, column: 1 },
-            { title: "Item 10", row: 2, column: 2, filler: false },
+            { title: "Minetest", icon: @image-url("minetest.png"), row: 0, column: 0, background: #ffffff },
+            { title: "Trophies", row: 0, column: 1, background: #ffffff },
+            { title: "Item 3", row: 0, column: 2, background: #ffffff },
+            { title: "Item 4", row: 1, column: 0, background: #ffffff },
+            { title: "Item 5", row: 1, column: 1, background: #ffffff },
+            { title: "Item 6", row: 1, column: 2, background: #ffffff },
+            { title: "Item 7", row: 1, column: 3, background: #ffffff },
+            { title: "Item 8", row: 2, column: 0, background: #ffffff },
+            { title: "Item 9", row: 2, column: 1, background: #ffffff },
+            { title: "Item 10", row: 2, column: 2, filler: false, background: #ffffff },
         ],
         [
-            { title: "Item 1", row: 0, column: 0 },
-            { title: "Item 1", row: 0, column: 0 },
-            { row: 0, column: 1, filler: true },
-            { title: "Item 3", row: 0, column: 2 },
-            { title: "Item 4", row: 1, column: 0 },
-            { title: "Item 5", row: 1, column: 1 },
-            { row: 1, column: 2, filler: true },
-            { title: "Item 7", row: 1, column: 3 },
-            { title: "Item 8", row: 2, column: 0 },
-            { title: "Item 9", row: 2, column: 1 },
-            { row: 2, column: 2, filler: true },
-            { row: 2, column: 3, filler: true },
+            { title: "Item 1", row: 0, column: 0, background: #ffffff },
+            { title: "Item 1", row: 0, column: 0, background: #ffffff },
+            { row: 0, column: 1, filler: true, background: #ffffff },
+            { title: "Item 3", row: 0, column: 2, background: #ffffff },
+            { title: "Item 4", row: 1, column: 0, background: #ffffff },
+            { title: "Item 5", row: 1, column: 1, background: #ffffff },
+            { row: 1, column: 2, filler: true, background: #ffffff },
+            { title: "Item 7", row: 1, column: 3, background: #ffffff },
+            { title: "Item 8", row: 2, column: 0, background: #ffffff },
+            { title: "Item 9", row: 2, column: 1, background: #ffffff },
+            { row: 2, column: 2, filler: true, background: #ffffff },
+            { row: 2, column: 3, filler: true, background: #ffffff },
         ]
     ];
-    in property <[Page]> pages: [
+    in property <[Bubble]> pages: [
         {
             title: "Trophies",
-            color: #000000,
+            background: #000000,
         }
     ];
 
     in property <int> current-bubble-page: 0;
     in-out property <int> current-page: 0;
+    in property <bool> show-list;
 
     // dummy callbacks for slint viewer
     move-right => {
@@ -71,55 +79,97 @@ export global LauncherAdapter {
 
 export component LauncherView {
     forward-focus: i-focus-scope;
-    width: 100%;
-    height: 100%;
+    preferred-width: 100%;
+    preferred-height: 100%;
 
-    i-page-scroll-view := PageScrollView {
-        // 1 for the bubbles as first page
-        count: 1 + LauncherAdapter.pages.length;
-        current-page <=> LauncherAdapter.current-page;
+    VerticalLayout {
+        height: 100%;
 
-        move-left => {
-            LauncherAdapter.move-left();
+        AppBarView {
+            vertical-stretch: 0;
         }
 
-        move-right => {
-            LauncherAdapter.move-right();
-        }
+        Rectangle {
+            vertical-stretch: 1;
 
-        // bubbles
-        HorizontalLayout {
-            padding-left: Theme.spacings.medium;
-            width: root.width;
-            height: root.height;
+            i-page-scroll-view := PageScrollView {
+                // 1 for the bubbles as first page
+                count: 1 + LauncherAdapter.pages.length;
+                current-page <=> LauncherAdapter.current-page;
 
-            i-pageination := Pageination {
-                count: LauncherAdapter.bubbles.length;
-                selected-index: LauncherAdapter.current-bubble-page;
-            }
+                move-left => {
+                    LauncherAdapter.move-left();
+                }
 
-            i-bubble-launcher := BubbleLauncher {
-                model: LauncherAdapter.bubbles;
-                current-page <=> LauncherAdapter.current-bubble-page;
+                move-right => {
+                    LauncherAdapter.move-right();
+                }
 
-                bubble-clicked(id) => {
-                    LauncherAdapter.open-page(id);
+                // bubbles
+                HorizontalLayout {
+                    padding-left: Theme.spacings.medium;
+                    width: root.width;
+                    height: root.height;
+
+                    i-pageination := Pageination {
+                        count: LauncherAdapter.bubbles.length;
+                        selected-index: LauncherAdapter.current-bubble-page;
+                    }
+
+                    i-bubble-launcher := BubbleLauncher {
+                        model: LauncherAdapter.bubbles;
+                        current-page <=> LauncherAdapter.current-bubble-page;
+
+                        bubble-clicked(id) => {
+                            if (i-page-scroll-view.viewport-x < 0) {
+                                return;
+                            }
+
+                            LauncherAdapter.open-page(id);
+                        }
+                    }
+                }
+
+                for page[index] in LauncherAdapter.pages : PageItem {
+                    width: root.width;
+                    height: root.height;
+                    title: page.title;
+                    background: page.background;
+                    button-image: page.icon;
+                    selected: index == LauncherAdapter.current-page - 1;
+
+                    clicked => {
+                        LauncherAdapter.open-app(page.title);
+                    }
+
+                    close => {
+                        LauncherAdapter.close-current-page();
+                    }
                 }
             }
-        }
 
-        for page in LauncherAdapter.pages : PageItem {
-            width: root.width;
-            height: root.height;
-            title: page.title;
-            background: page.color;
+            if (LauncherAdapter.bubbles.length > 0 && LauncherAdapter.current-bubble-page > 0
+                && LauncherAdapter.current-page == 0) : PathButton {
+                x: (root.width - self.width) / 2;
+                y: Theme.spacings.large;
+                path: Paths.triangle-up;
+                fill: Theme.palette.white-up-gradient;
 
-            clicked => {
-                LauncherAdapter.open-app(page.title);
+                clicked => {
+                    LauncherAdapter.move-up();
+                }
             }
 
-            close => {
-                LauncherAdapter.close-current-page();
+            if (LauncherAdapter.bubbles.length > 0 && LauncherAdapter.current-bubble-page < LauncherAdapter.bubbles.length - 1
+                    && LauncherAdapter.current-page == 0) : PathButton {
+                x: (root.width - self.width) / 2;
+                y: parent.height - self.height - Theme.spacings.large;
+                path: Paths.triangle-down;
+                fill: Theme.palette.white-down-gradient;
+
+                clicked => {
+                    LauncherAdapter.move-down();
+                }
             }
         }
     }
@@ -128,6 +178,50 @@ export component LauncherView {
         width: 0px;
 
         key-pressed(e) => {
+            if(LauncherAdapter.show-list) {
+                if (e.text == Key.UpArrow) {
+                    ListAdapter.move-up();
+                    return accept;
+                }
+
+                if (e.text == Key.DownArrow) {
+                    ListAdapter.move-down();
+                    return accept;
+                }
+
+                if (e.text == Key.LeftArrow) {
+                    ListAdapter.move-left();
+                    return accept;
+                }
+                if (e.text == Key.Return) {
+                    ListAdapter.on-enter();
+                    return accept;
+                }
+                if (e.text == Key.Escape) {
+                    LauncherAdapter.close-list();
+                }
+                return reject;
+            }
+
+            if (LauncherAdapter.current-page > 0) {
+                if (e.text == Key.LeftArrow) {
+                    LauncherAdapter.move-left();
+                    return accept;
+                }
+
+                if (e.text == Key.RightArrow) {
+                    LauncherAdapter.move-right();
+                    return accept;
+                }
+
+                if (e.text == Key.Return) {
+                    LauncherAdapter.on-enter();
+                    return accept;
+                }
+
+                return reject;
+            }
+
             if (e.text == Key.Escape) {
                 LauncherAdapter.clear-selection();
                 return accept;
@@ -156,6 +250,21 @@ export component LauncherView {
                 return accept;
             }
             reject
+        }
+    }
+
+    AnimationContainer {
+        preferred-width: 100%;
+        preferred-height: 100%;
+        open: LauncherAdapter.show-list;
+
+        if (LauncherAdapter.show-list) : ListView {
+            preferred-width: 100%;
+            preferred-height: 100%;
+
+            close => {
+                LauncherAdapter.close-list();
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
 import { Theme } from "../styling/theme.slint";
@@ -11,28 +11,25 @@ export component PageScrollView {
 
     in-out property <int> current-page;
     in property <int> count;
+    out property <length> viewport-x: i-layout.x;
 
     width: 100%;
     height: 100%;
 
-    i-flickable := Flickable {
+    i-layout := HorizontalLayout {
+        x: -min(max(0px, root.current-page * self.width), root.count * self.width);
         width: 100%;
         height: 100%;
-        // need to be non interactive because it causes trouble with the flickable of bubble launcher
-        interactive: false;
-        viewport-x: -min(max(0px, root.current-page * self.width), root.count * self.width);
 
-        HorizontalLayout {
-            @children
-        }
+        @children
 
-        animate viewport-x { duration: Theme.animations.medium;  }
+        animate x { duration: 2 * Theme.animations.medium; easing: cubic-bezier(0.05, 0.7, 0.1, 1.0);  }
     }
 
     if(root.current-page > 0) : PathButton {
         x: Theme.spacings.large;
         path: Paths.triangle-left;
-        fill: Theme.palette.gradient-white-left;
+        fill: Theme.palette.white-left-gradient;
 
         clicked => {
             root.move-left();
@@ -42,7 +39,7 @@ export component PageScrollView {
     if(root.count > 0 && root.current-page < root.count - 1) : PathButton {
         x: root.width - self.width - Theme.spacings.large;
         path: Paths.triangle-right;
-        fill: Theme.palette.gradient-white-right;
+        fill: Theme.palette.white-right-gradient;
 
         clicked => {
             root.move-right();

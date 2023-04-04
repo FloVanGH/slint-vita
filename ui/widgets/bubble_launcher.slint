@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
 import { Theme } from "../styling/theme.slint";
@@ -11,11 +11,16 @@ component BubbleItem {
     in property <image> icon <=> i-image.source;
     in property <bool> selected <=> i-state-area.has-focus;
     in property <bool> filler;
+    in property <brush> background <=> i-container.background;
 
     width: Theme.sizes.bubble;
     height: Theme.sizes.bubble;
 
     i-container := Rectangle {
+        x: (parent.width - self.width) / 2;
+        y: (parent.height - self.height) / 2;
+        width: 100%;
+        height: 100%;
         visible: !root.filler;
         clip: true;
         border-radius: max(self.width, self.height) / 2;
@@ -26,17 +31,31 @@ component BubbleItem {
             height: 100%;
             image-fit: fill;
         }
+
+        animate width, height { duration: 2 * Theme.animations.medium; easing: cubic-bezier(0.05, 0.7, 0.1, 1.0);  }
     }
 
     i-text := Text {
-        color: white;
+        color: Theme.palette.foreground-brush;
+        font-size: Theme.typo.label-list-description.font-size;
         horizontal-alignment: center;
         y: root.height;
     }
 
     i-state-area := StateArea {
+        x: i-container.x;
+        y: i-container.y;
+        width: i-container.width;
+        height: i-container.height;
         border-radius: i-container.border-radius;
     }
+
+    states [
+        pressed when i-state-area.pressed : {
+            i-container.width: 110%;
+            i-container.height: 110%;
+        }
+    ]
 }
 
 export struct Bubble {
@@ -46,6 +65,7 @@ export struct Bubble {
     column: int,
     filler: bool,
     selected: bool,
+    background: brush,
 }
 
 export struct BubblePage {
@@ -61,7 +81,7 @@ export component BubblePageItem {
     private property <length> odd-x:
     (root.width - odd-columns * Theme.sizes.bubble - ((odd-columns - 1) * root.hor-spacing)) / 2;
     private property <length> start-y:
-        (root.height - rows * Theme.sizes.bubble - ((rows - 1) * root.ver-spacing)) / 2;
+        (root.height - (rows * (Theme.sizes.bubble + Theme.typo.label-list-description.font-size) + ((rows - 1) * root.ver-spacing))) / 2;
 
     callback item-clicked(string /* index */);
 
@@ -76,6 +96,7 @@ export component BubblePageItem {
         y: bubble-y(bubble.row);
         filler: bubble.filler;
         selected: bubble.selected;
+        background: bubble.background;
 
         clicked => {
             if(self.filler) {
@@ -107,15 +128,17 @@ export component BubbleLauncher {
     callback bubble-clicked(string /* key */);
 
     in property <[[Bubble]]> model;
-    in property <int> current-page: -round(i-flickable.viewport-y / i-flickable.height);
+    in property <int> current-page;
 
     horizontal-stretch: 1;
 
-    i-flickable := Flickable {
-        interactive: false;
-        viewport-y: -current-page * root.height;
+    Rectangle {
+        width: 100%;
+        height: 100%;
+        clip: true;
 
-        VerticalLayout {
+        i-layout := VerticalLayout {
+            y: -current-page * root.height;
             for page[index] in model : BubblePageItem {
                 width: 100%;
                 height: root.height;
@@ -125,8 +148,8 @@ export component BubbleLauncher {
                     root.bubble-clicked(id);
                 }
             }
-        }
 
-        animate viewport-y { duration: Theme.animations.fast;  }
+            animate y { duration: 2 * Theme.animations.medium; easing: cubic-bezier(0.05, 0.7, 0.1, 1.0);  }
+        }
     }
 }

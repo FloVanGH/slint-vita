@@ -1,14 +1,9 @@
-// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
 import { Theme } from "../styling/theme.slint";
 import { ImageButton } from "image_button.slint";
 import { Container } from "container.slint";
-
-export struct Page {
-    title: string,
-    color: brush
-}
 
 export component PageItem {
     callback clicked <=> i-image-button.clicked;
@@ -17,6 +12,13 @@ export component PageItem {
     in property <string> title;
     in property <brush> background: red;
     in property <image> button-image <=> i-image-button.background-image;
+    in property <bool> selected <=> i-image-button.selected;
+
+    // prevent click through
+    TouchArea {
+        width: 100%;
+        height: 100%;
+    }
 
     i-container := Container {
         x: Theme.spacings.extra-large;
@@ -37,8 +39,9 @@ export component PageItem {
             padding: Theme.spacings.medium;
 
             Text {
-                color: white;
+                color: Theme.palette.foreground-brush;
                 text: root.title;
+                font-size: Theme.typo.label-list-title.font-size;
             }
         }
 

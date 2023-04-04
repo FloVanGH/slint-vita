@@ -1,0 +1,43 @@
+// SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
+// SPDX-License-Identifier: MIT
+
+import { Theme } from "../styling/theme.slint";
+
+export global AppBarAdapter {
+    in property <string> current-time;
+}
+
+export component AppBarView {
+    min-height: 32px;
+
+    Rectangle {
+        width: 100%;
+        height: 100%;
+
+        background: Theme.palette.app-bar-brush;
+    }
+
+    HorizontalLayout {
+        padding-left: 8px;
+        padding-right: 8px;
+        spacing: 8px;
+
+        Rectangle {
+            horizontal-stretch: 1;
+        }
+
+        Text {
+            text: AppBarAdapter.current-time;
+            vertical-alignment: center;
+            color: Theme.palette.foreground-brush;
+            font-size: Theme.typo.label-list-description.font-size;
+        }
+    }
+
+    Rectangle {
+        width: 100%;
+        height: 1px;
+        y: root.height - self.height;
+        background: Theme.palette.border-brush;
+    }
+}

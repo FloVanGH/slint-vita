@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
 export class Bubble {
@@ -8,13 +8,15 @@ export class Bubble {
     public filler: boolean;
     public icon: string;
     public selected: boolean;
+    public background: string;
 
     constructor(
         title: string,
         row: number,
         column: number,
         filler: boolean,
-        icon: string
+        icon: string,
+        background = "#ffffff"
     ) {
         this.title = title;
         this.row = row;
@@ -22,5 +24,6 @@ export class Bubble {
         this.filler = filler;
         this.icon = icon;
         this.selected = false;
+        this.background = background;
     }
 }

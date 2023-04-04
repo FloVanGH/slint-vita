@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
 import { Theme } from "../styling/theme.slint";
@@ -15,7 +15,7 @@ export component PathButton {
     i-path := Path {
         commands: root.path;
 
-        animate opacity { duration: Theme.animations.medium; }
+        animate opacity { duration: 2 * Theme.animations.medium; }
     }
 
     i-touch-area := TouchArea {}
@@ -23,6 +23,9 @@ export component PathButton {
     states [
         pressed when i-touch-area.pressed : {
             i-path.opacity: 0.0;
+        }
+        hover when i-touch-area.has-hover : {
+            i-path.opacity: 0.5;
         }
     ]
 }

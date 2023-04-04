@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 Florian Blasius <co_sl@tutanota.com>
+// SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
 // SPDX-License-Identifier: MIT
 
 import { Bubble } from "../../data/bubble";
@@ -8,8 +8,8 @@ export class BubbleServiceMock implements BubbleService {
     private readonly _bubbles: Bubble[][] = [
         [
             new Bubble("Minetest", 0, 0, false, "minetest.png"),
-            new Bubble("Trophies", 0, 1, false, "minetest.png"),
-            new Bubble("Item 3", 0, 2, false, "minetest.png"),
+            new Bubble("Trophies", 0, 1, false, "minetest.png", "#000000"),
+            new Bubble("Settings", 0, 2, false, "minetest.png", "#7c9d46"),
             new Bubble("Item 4", 1, 0, false, "minetest.png"),
             new Bubble("Item 5", 1, 1, false, "minetest.png"),
             new Bubble("Item 6", 1, 2, false, "minetest.png"),

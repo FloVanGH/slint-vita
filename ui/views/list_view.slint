@@ -1,0 +1,188 @@
+// SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
+// SPDX-License-Identifier: MIT
+
+import { Container, PageScrollView, StateArea, Icon } from "../widgets/widgets.slint";
+import { Theme } from "../styling/theme.slint";
+import { Paths } from "../styling/paths.slint";
+
+export struct ListItem {
+    title: string,
+    id: string,
+    description: string,
+    additional-description: string,
+    selected: bool,
+    icon: string,
+    icon-color: brush,
+    has-details: bool,
+    decent: bool
+}
+
+export component ListViewItem {
+    callback clicked <=> i-state-area.clicked;
+
+    in property <string> text <=> i-text.text;
+    in property <string> description;
+    in property <string> additional-description;
+    in property <bool> selected <=> i-state-area.has-focus;
+    in property <string> icon;
+    in property <brush> icon-color;
+    in property <bool> has-details;
+    in property <bool> decent;
+
+    min-height: 62px;
+    opacity: decent ? 0.6 : 1.0;
+
+    Rectangle {
+        x: 0;
+        y: 0;
+        width: 100%;
+        height: 40%;
+        background: Theme.palette.items-gradient;
+    }
+
+    Rectangle {
+        x: 0;
+        y: 0;
+        width: 100%;
+        height: 1px;
+        background: Theme.palette.border-brush;
+    }
+
+    HorizontalLayout {
+        height: 100%;
+        padding-left: 64px;
+        padding-right: 32px;
+        spacing: Theme.spacings.medium;
+
+        if (root.icon != "") : Icon {
+            text: root.icon;
+            vertical-alignment: center;
+            color: root.icon-color;
+        }
+
+        i-layout := VerticalLayout {
+            horizontal-stretch: 1;
+            alignment: center;
+
+            i-text := Text {
+                color: Theme.palette.foreground-brush;
+                horizontal-alignment: left;
+                font-size: Theme.typo.label-list-title.font-size;
+            }
+
+            if (root.description != "") : Text {
+                text: root.description;
+                color: Theme.palette.foreground-brush;
+                horizontal-alignment: left;
+                font-size: Theme.typo.label-list-description.font-size;
+            }
+
+            if (root.additional-description != "") : Text {
+                text: root.additional-description;
+                color: Theme.palette.foreground-brush;
+                horizontal-alignment: left;
+                font-size: Theme.typo.label-list-description.font-size;
+            }
+        }
+
+        if (root.has-details) : Path {
+            min-width: 32px;
+            height: self.width;
+            horizontal-stretch: 0;
+            commands: Paths.triangle-right;
+            fill: Theme.palette.white-right-gradient;
+            y: (parent.height - self.height) / 2;
+        }
+    }
+
+    i-state-area := StateArea {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+export global ListAdapter {
+    callback show-details(ListItem /* item */);
+    callback move-up();
+    callback move-down();
+    callback move-left();
+    callback on-enter();
+
+    in property <[[ListItem]]> list-items;
+    in-out property <length> item-height;
+    in property <string> title;
+    in property <brush> background;
+    in property <int> current-page;
+    in property <string> sub-title;
+}
+
+export component ListView {
+    callback close <=> i-container.close;
+
+    i-container := Container {
+        background: ListAdapter.background;
+        preferred-width: 100%;
+        preferred-height: 100%;
+
+        VerticalLayout {
+            padding-top: 32px;
+
+            Text {
+                x: 64px;
+                vertical-stretch: 0;
+                color: Theme.palette.foreground-brush;
+                font-size: Theme.typo.label-list-title.font-size;
+                text: ListAdapter.title;
+            }
+
+            Text {
+                x: 64px;
+                vertical-stretch: 0;
+                color: Theme.palette.foreground-brush;
+                font-size: Theme.typo.label-list-description.font-size;
+                text: ListAdapter.sub-title;
+            }
+
+            i-page-scroll-view := PageScrollView {
+                width: 100%;
+                vertical-stretch: 1;
+                current-page <=> ListAdapter.current-page;
+                count: ListAdapter.list-items.length;
+
+                move-left => {
+                    ListAdapter.move-left();
+                }
+
+                HorizontalLayout {
+                    for list[list-index] in ListAdapter.list-items : Flickable {
+                        width: i-page-scroll-view.width;
+                        height: i-page-scroll-view.height;
+
+                        VerticalLayout {
+                            padding-left: 64px;
+                            padding-right: 64px;
+                            // FIXME
+                            padding-bottom: 78px;
+                            alignment: start;
+
+                            for item[index] in list : ListViewItem {
+                                text: item.title;
+                                selected: item.selected;
+                                description: item.description;
+                                icon: item.icon;
+                                icon-color: item.icon-color;
+                                has-details: item.has-details;
+                                additional-description: item.additional-description;
+                                decent: item.decent;
+
+                                clicked => {
+                                    ListAdapter.show-details(item);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

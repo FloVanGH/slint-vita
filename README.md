@@ -23,6 +23,16 @@ npm install
 export SLINT_BACKEND=winit && npm start
 ```
 
+## How to display psn trophies
+
+It is possible to display psn trophies. To use it an authentication token is needed. An explanation how to obain
+an authentic token can be found at https://www.npmjs.com/package/psn-api. With that token the app can be run with:
+
+```sh
+npm install
+export PSN=my_token && npm start
+```
+
 ## License
 
 The source code of the showcase is available under the terms of MIT license.

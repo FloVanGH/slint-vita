@@ -1,0 +1,33 @@
+// SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
+// SPDX-License-Identifier: MIT
+
+import { Theme } from "../styling/theme.slint";
+
+export component AnimationContainer {
+    in property <bool> open: false;
+
+    opacity: 0.0;
+
+    i-animation-container := Rectangle {
+        width: 25%;
+        height: 25%;
+
+        Rectangle {
+            preferred-width: 100%;
+            preferred-height: 100%;
+
+            @children
+        }
+
+        animate width { duration: 2 * Theme.animations.medium; easing: cubic-bezier(0.05, 0.7, 0.1, 1.0); }
+        animate height { duration: 2 * Theme.animations.medium; easing: cubic-bezier(0.05, 0.7, 0.1, 1.0); }
+    }
+
+    states [
+        open when root.open : {
+            i-animation-container.width: 100%;
+            i-animation-container.height: 100%;
+            opacity: 1.0;
+        }
+    ]
+}
