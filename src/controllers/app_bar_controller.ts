@@ -11,13 +11,15 @@ export class AppBarController {
     constructor(timeService: TimeService, mainWindow: MainWindow) {
         this._timeService = timeService;
         this._mainWindow = mainWindow;
+
+        this._timeService.bindCurrentTimeChanged(this.onCurrentTimeChanged);
     }
 
-    public update(): void {
-        this.updateCurrentTime();
+    public init(): void {
+        this.onCurrentTimeChanged(this._timeService.currentTime);
     }
 
-    private updateCurrentTime(): void {
-        this._mainWindow.app_bar_current_time = this._timeService.currentTime;
-    }
+    onCurrentTimeChanged = (currentTime: string): void => {
+        this._mainWindow.app_bar_current_time = currentTime;
+    };
 }

@@ -7,5 +7,6 @@ export interface ListService {
     get masterItems(): List;
     get background(): string;
 
+    init: () => Promise<void>;
     detailsItems: (id: string) => List | undefined;
 }

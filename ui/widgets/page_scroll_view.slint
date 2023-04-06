@@ -14,7 +14,7 @@ export component PageScrollView {
     out property <length> viewport-x: i-layout.x;
 
     width: 100%;
-    height: 100%;
+    preferred-height: 100%;
 
     i-layout := HorizontalLayout {
         x: -min(max(0px, root.current-page * self.width), root.count * self.width);

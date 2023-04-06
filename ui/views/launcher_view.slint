@@ -7,6 +7,7 @@ import { ListView, ListAdapter } from "list_view.slint";
 import { Theme } from "../styling/theme.slint";
 import { Paths } from "../styling/paths.slint";
 import { AppBarView } from "app_bar_view.slint";
+import { NotificationAdapter } from "notification_view.slint";
 
 export global LauncherAdapter {
     callback move-selection-left();
@@ -87,6 +88,10 @@ export component LauncherView {
 
         AppBarView {
             vertical-stretch: 0;
+            button-text: NotificationAdapter.notifications.length > 0 ? NotificationAdapter.notifications.length : "";
+            button-clicked => {
+                NotificationAdapter.show-notifications = !NotificationAdapter.show-notifications;
+            }
         }
 
         Rectangle {

@@ -2,5 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 export interface TimeService {
-    get currentTime(): string;
+    currentTime: string;
+    bindCurrentTimeChanged: (callback: (currentTime: string) => void) => void;
 }

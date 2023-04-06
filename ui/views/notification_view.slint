@@ -1,0 +1,129 @@
+// SPDX-FileCopyrightText: 2023 Florian Blasius <co_sl@tutanota.com>
+// SPDX-License-Identifier: MIT
+
+import { Theme } from "../styling/theme.slint";
+import { Item } from "../widgets/widgets.slint";
+
+export struct NotificationMessage {
+    title: string
+}
+
+export global NotificationAdapter {
+    in property <[NotificationMessage]> notifications;
+    in property <NotificationMessage> recent-notification;
+    in property <bool> show-recent;
+    in property <bool> show-notifications;
+}
+
+component NotificationList {
+    VerticalLayout {
+        alignment: start;
+
+        Rectangle {
+            border-width: 2px;
+            border-radius: 4px;
+            border-color: Theme.palette.border-brush;
+            background: #9c9c9c;
+            clip: true;
+            width: 100%;
+
+            i-flickable := Flickable {
+                width: 100%;
+
+                i-vert-layout := VerticalLayout {
+
+                    alignment: start;
+                    padding: 2px;
+
+                    for notification in NotificationAdapter.notifications : Item {
+                        padding-left: 16px;
+                        padding-right: 16px;
+                        text: notification.title;
+                    }
+               }
+            }
+        }
+    }
+}
+
+component NotificationItem {
+    in property <string> title <=> i-title.text;
+    in property <bool> show;
+
+    max-width: 256px;
+    opacity: 0;
+
+    Rectangle {
+        border-width: 2px;
+        border-radius: 4px;
+        border-color: Theme.palette.border-brush;
+        background: #9c9c9c;
+    }
+
+    HorizontalLayout {
+        padding: 4px;
+
+        i-title := Text {
+            color: Theme.palette.foreground-brush;
+            font-size: 12px;
+            wrap: word-wrap;
+        }
+    }
+
+    animate opacity { duration: Theme.animations.medium; }
+
+    states [
+        show when root.show : {
+            root.opacity: 1;
+        }
+    ]
+}
+
+export component NotificationView {
+    i-dimmer := Rectangle {
+        width: 100%;
+        height: 100%;
+        opacity: 0.0;
+        background: #000000;
+
+        animate opacity { duration: Theme.animations.medium; }
+    }
+
+    if (NotificationAdapter.show-notifications) : TouchArea {
+        clicked => {
+            NotificationAdapter.show-notifications = false;
+        }
+    }
+
+    i-notification-list := NotificationList {
+        x: (root.width - self.width) - 32px;
+        y: 64px;
+        width: 0px;
+        height: 0px;
+
+        animate width { duration: 2 * Theme.animations.medium; easing: cubic-bezier(0.05, 0.7, 0.1, 1.0); }
+        animate height { duration: 2 * Theme.animations.medium; easing: cubic-bezier(0.05, 0.7, 0.1, 1.0); }
+    }
+
+    VerticalLayout {
+        alignment: start;
+        padding: 16px;
+
+        HorizontalLayout {
+            alignment: end;
+
+            NotificationItem {
+                show: NotificationAdapter.show-recent;
+                title: NotificationAdapter.recent-notification.title;
+            }
+        }
+    }
+
+    states [
+        visible when NotificationAdapter.show-notifications : {
+            i-notification-list.width: root.width - 64px;
+            i-notification-list.height: root.height - 96px;
+            i-dimmer.opacity: 0.5;
+        }
+    ]
+}

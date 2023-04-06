@@ -7,7 +7,7 @@ import { type ListService } from "../interfaces/list_service";
 export class TrophyServiceMock implements ListService {
     private readonly _trophiesList: List = new List();
 
-    constructor() {
+    async init(): Promise<void> {
         this._trophiesList.push(new ListItem("The last of us"));
         this._trophiesList.push(new ListItem("Gravity rush."));
     }

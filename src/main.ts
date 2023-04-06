@@ -4,8 +4,6 @@
 import { MainWindow, slint } from "../ui-import";
 import { LauncherController } from "./controllers/launcher_controller";
 import { ListController } from "./controllers/list_controller";
-// import { BubbleServiceMock } from "./services/mocks/bubble_service_mock";
-import { TrophyServiceMock } from "./services/mocks/trophy_service_mock";
 import { TrophyService } from "./services/trophy_service";
 import { NavigationService } from "./services/navigation_service";
 import * as view from "./keys/view";
@@ -14,62 +12,54 @@ import { AppBarController } from "./controllers/app_bar_controller";
 import { TimeService } from "./services/time_service";
 import { BubbleService } from "./services/bubble_service";
 import { StorageService } from "./services/storage_service";
+import { NotificationService } from "./services/notification_service";
+import { NotificationMessage } from "./data/notification";
+import { NotificationController } from "./controllers/notification_controller";
 
 const mainWindow = new MainWindow();
-
 const storageService = new StorageService();
-const appBarController = new AppBarController(new TimeService(), mainWindow);
 const navigationService = new NavigationService();
+const notificationService = new NotificationService();
+const appBarController = new AppBarController(new TimeService(), mainWindow);
+const notificationController = new NotificationController(
+    notificationService,
+    mainWindow
+);
 
 const launcherController = new LauncherController(
     new BubbleService(storageService),
     navigationService,
     mainWindow
 );
+const trophiesController = new ListController(
+    new TrophyService(process.env.PSN),
+    mainWindow
+);
 
-function updateAppBar(): void {
-    appBarController.update();
-    slint.Timer.singleShot(500, updateAppBar);
-}
+navigationService.registerListController(view.trophies, trophiesController);
 
-slint.Timer.singleShot(500, updateAppBar);
+appBarController.init();
+launcherController.init();
+notificationController.init();
+
+trophiesController
+    .init()
+    .then(() => {
+        for (let i = 0; i < 20; i++) {
+            notificationService.add(
+                new NotificationMessage(
+                    "blu asdf das<fdsaf asdfas fdsf dsfs sdf dssdf sdfds fsdf dsf sdfsd fsdf dsfds fsdfd ssdf dssdf sdf sdsdf sdf dsdsf sdfb"
+                )
+            );
+        }
+
+        mainWindow.run();
+    })
+    .catch((error) => {
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+        notificationService.add(new NotificationMessage("Trophies: " + error));
+        mainWindow.run();
+    });
 
 launcherController.init();
 dotenv.config();
-
-if (process.env.PSN !== undefined && process.env.PSN !== "") {
-    const trophyService = new TrophyService(storageService);
-    trophyService.init(process.env.PSN).then(
-        () => {
-            console.log("Run psn service");
-            const trophiesController = new ListController(
-                trophyService,
-                mainWindow
-            );
-            trophiesController.init();
-
-            navigationService.registerListController(
-                view.trophies,
-                trophiesController
-            );
-
-            trophyService.save();
-            mainWindow.run();
-        },
-        () => {
-            runMock(navigationService, mainWindow);
-        }
-    );
-} else {
-    runMock(navigationService, mainWindow);
-}
-
-function runMock(navigationService, mainWindow: MainWindow): void {
-    const trophiesController = new ListController(
-        new TrophyServiceMock(),
-        mainWindow
-    );
-    trophiesController.init();
-    navigationService.registerListController(view.trophies, trophiesController);
-    mainWindow.run();
-}
