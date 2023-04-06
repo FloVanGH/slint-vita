@@ -4,7 +4,7 @@
 import { MainWindow, slint } from "../ui-import";
 import { LauncherController } from "./controllers/launcher_controller";
 import { ListController } from "./controllers/list_controller";
-import { BubbleServiceMock } from "./services/mocks/bubble_service_mock";
+// import { BubbleServiceMock } from "./services/mocks/bubble_service_mock";
 import { TrophyServiceMock } from "./services/mocks/trophy_service_mock";
 import { TrophyService } from "./services/trophy_service";
 import { NavigationService } from "./services/navigation_service";
@@ -12,15 +12,17 @@ import * as view from "./keys/view";
 import * as dotenv from "dotenv";
 import { AppBarController } from "./controllers/app_bar_controller";
 import { TimeService } from "./services/time_service";
+import { BubbleService } from "./services/bubble_service";
+import { StorageService } from "./services/storage_service";
 
 const mainWindow = new MainWindow();
 
+const storageService = new StorageService();
 const appBarController = new AppBarController(new TimeService(), mainWindow);
-
 const navigationService = new NavigationService();
 
 const launcherController = new LauncherController(
-    new BubbleServiceMock(),
+    new BubbleService(storageService),
     navigationService,
     mainWindow
 );
@@ -36,7 +38,7 @@ launcherController.init();
 dotenv.config();
 
 if (process.env.PSN !== undefined && process.env.PSN !== "") {
-    const trophyService = new TrophyService();
+    const trophyService = new TrophyService(storageService);
     trophyService.init(process.env.PSN).then(
         () => {
             console.log("Run psn service");
@@ -51,6 +53,7 @@ if (process.env.PSN !== undefined && process.env.PSN !== "") {
                 trophiesController
             );
 
+            trophyService.save();
             mainWindow.run();
         },
         () => {

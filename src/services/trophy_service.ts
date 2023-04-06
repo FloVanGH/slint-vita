@@ -13,9 +13,17 @@ import {
 import { List, ListItem } from "../data/list";
 import { type ListService } from "./interfaces/list_service";
 import { fa_var_trophy } from "../assets/icons";
+import { type StorageService } from "./interfaces/storage_service";
+
+const serviceKey = "trophies";
 
 export class TrophyService implements ListService {
-    private readonly _trophies = new Map<string, List>();
+    private readonly storageService: StorageService;
+    private readonly trophies = new Map<string, List>();
+
+    constructor(storageService: StorageService) {
+        this.storageService = storageService;
+    }
 
     public async init(psnKey: string): Promise<void> {
         const accessCode = await exchangeNpssoForCode(psnKey);
@@ -57,12 +65,22 @@ export class TrophyService implements ListService {
 
         trophyTitlesList.title = "Trophies";
 
-        this._trophies.set("main", trophyTitlesList);
+        this.trophies.set("main", trophyTitlesList);
+
         await Promise.all(responses);
     }
 
+    public save(): void {
+        if (this.trophies.size === 0) {
+            return;
+        }
+
+        const trophyObject = Object.fromEntries(this.trophies);
+        this.storageService.save(serviceKey, trophyObject);
+    }
+
     get masterItems(): List {
-        const masterList = this._trophies.get("main");
+        const masterList = this.trophies.get("main");
 
         if (masterList !== undefined) {
             return masterList;
@@ -196,11 +214,11 @@ export class TrophyService implements ListService {
             trophiesList.push(listItem);
         });
 
-        this._trophies.set(npCommunicationId, trophiesList);
+        this.trophies.set(npCommunicationId, trophiesList);
     }
 
     public detailsItems(id: string): List | undefined {
-        return this._trophies.get(id);
+        return this.trophies.get(id);
     }
 
     readonly background = "#000000";
