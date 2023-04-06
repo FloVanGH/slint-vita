@@ -139,7 +139,7 @@ export class LauncherController {
         const pagesCount = this._mainWindow.launcher_bubbles.length;
         const currentPage = this._mainWindow.launcher_current_bubble_page;
 
-        if (currentPage >= pagesCount) {
+        if (currentPage >= pagesCount || pagesCount < 2) {
             return;
         }
 

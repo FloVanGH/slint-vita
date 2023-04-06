@@ -2,12 +2,17 @@
 // SPDX-License-Identifier: MIT
 
 import { Theme } from "../styling/theme.slint";
+import { RoundButton } from "../widgets/widgets.slint";
 
 export global AppBarAdapter {
     in property <string> current-time;
 }
 
 export component AppBarView {
+    callback button-clicked <=> i-round-button.clicked;
+
+    in property <string> button-text <=> i-round-button.text;
+
     min-height: 32px;
 
     Rectangle {
@@ -19,7 +24,7 @@ export component AppBarView {
 
     HorizontalLayout {
         padding-left: 8px;
-        padding-right: 8px;
+        padding-right: 8px + root.width - i-round-button.x;
         spacing: 8px;
 
         Rectangle {
@@ -39,5 +44,10 @@ export component AppBarView {
         height: 1px;
         y: root.height - self.height;
         background: Theme.palette.border-brush;
+    }
+
+    i-round-button := RoundButton {
+        x: (root.width - self.width + 16px);
+        visible: self.text != "";
     }
 }

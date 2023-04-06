@@ -13,20 +13,21 @@ import {
 import { List, ListItem } from "../data/list";
 import { type ListService } from "./interfaces/list_service";
 import { fa_var_trophy } from "../assets/icons";
-import { type StorageService } from "./interfaces/storage_service";
-
-const serviceKey = "trophies";
 
 export class TrophyService implements ListService {
-    private readonly storageService: StorageService;
+    private readonly _psnKey: string | undefined;
+
     private readonly trophies = new Map<string, List>();
 
-    constructor(storageService: StorageService) {
-        this.storageService = storageService;
+    constructor(psnKey: string | undefined) {
+        this._psnKey = psnKey;
     }
 
-    public async init(psnKey: string): Promise<void> {
-        const accessCode = await exchangeNpssoForCode(psnKey);
+    public async init(): Promise<void> {
+        if (this._psnKey === "" || this._psnKey === undefined) {
+            throw Error("No psn key defined.");
+        }
+        const accessCode = await exchangeNpssoForCode(this._psnKey);
         const authorization = await exchangeCodeForAccessToken(accessCode);
         const trophyTitlesResponse = await getUserTitles(
             { accessToken: authorization.accessToken },
@@ -68,15 +69,6 @@ export class TrophyService implements ListService {
         this.trophies.set("main", trophyTitlesList);
 
         await Promise.all(responses);
-    }
-
-    public save(): void {
-        if (this.trophies.size === 0) {
-            return;
-        }
-
-        const trophyObject = Object.fromEntries(this.trophies);
-        this.storageService.save(serviceKey, trophyObject);
     }
 
     get masterItems(): List {

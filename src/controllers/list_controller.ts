@@ -4,19 +4,22 @@
 import { type MainWindow, slint } from "../../ui-import";
 import { type ListItem, type List } from "../data/list";
 import { type ListService } from "../services/interfaces/list_service";
+import { type NotificationService } from "../services/interfaces/notification_service";
 
 export class ListController {
     private readonly _service: ListService;
+    private readonly _notificationService: NotificationService;
     private readonly _mainWindow: MainWindow;
     private readonly _lists: List[] = [];
 
     constructor(service: ListService, mainWindow: MainWindow) {
         this._service = service;
         this._mainWindow = mainWindow;
+        this.setHandlers();
     }
 
-    public init(): void {
-        this.setHandlers();
+    public async init(): Promise<void> {
+        await this._service.init();
     }
 
     private setHandlers(): void {
@@ -28,6 +31,7 @@ export class ListController {
     }
 
     public displayItems(): void {
+        this._mainWindow.list_current_page = 0;
         this._mainWindow.list_background = this._service.background;
 
         const listItemsModel = new slint.ArrayModel([]);
