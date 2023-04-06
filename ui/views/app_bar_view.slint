@@ -24,14 +24,15 @@ export component AppBarView {
 
     HorizontalLayout {
         padding-left: 8px;
-        padding-right: 8px + root.width - i-round-button.x;
+        padding-right: 8px;
         spacing: 8px;
+        width: root.width - i-round-button.width;
 
         Rectangle {
             horizontal-stretch: 1;
         }
 
-        Text {
+        i-timer := Text {
             text: AppBarAdapter.current-time;
             vertical-alignment: center;
             color: Theme.palette.foreground-brush;
@@ -47,7 +48,17 @@ export component AppBarView {
     }
 
     i-round-button := RoundButton {
+        width: 0px;
+        height: 0px;
         x: (root.width - self.width + 16px);
-        visible: self.text != "";
+
+        animate width, height { duration: 2 * Theme.animations.medium; easing: cubic-bezier(0.05, 0.7, 0.1, 1.0); }
     }
+
+    states [
+        button-visble when i-round-button.text != "": {
+            i-round-button.width: 64px;
+            i-round-button.height: 64px;
+        }
+    ]
 }
