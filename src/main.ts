@@ -45,14 +45,6 @@ notificationController.init();
 trophiesController
     .init()
     .then(() => {
-        for (let i = 0; i < 20; i++) {
-            notificationService.add(
-                new NotificationMessage(
-                    "blu asdf das<fdsaf asdfas fdsf dsfs sdf dssdf sdfds fsdf dsf sdfsd fsdf dsfds fsdfd ssdf dssdf sdf sdsdf sdf dsdsf sdfb"
-                )
-            );
-        }
-
         mainWindow.run();
     })
     .catch((error) => {
