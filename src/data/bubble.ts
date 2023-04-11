@@ -9,6 +9,7 @@ export class Bubble {
     public icon: string;
     public selected: boolean;
     public background: string;
+    public colorize: string;
 
     constructor(
         title: string,
@@ -16,7 +17,8 @@ export class Bubble {
         column: number,
         filler: boolean,
         icon: string,
-        background = "#ffffff"
+        background = "#ffffff",
+        colorize = "#ffffff"
     ) {
         this.title = title;
         this.row = row;
@@ -25,5 +27,6 @@ export class Bubble {
         this.icon = icon;
         this.selected = false;
         this.background = background;
+        this.colorize = colorize;
     }
 }

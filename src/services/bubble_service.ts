@@ -19,8 +19,13 @@ export class BubbleService implements bubble_service.BubbleService {
         const bubblePages = this._storageService.load<Bubble[][]>(serviceKey);
 
         if (bubblePages === undefined || bubblePages.length === 0) {
-            this.registerBubble("Trophies", "minetest.png", "#000000");
-            this.registerBubble("Settings", "minetest.png", "#7c9d46");
+            this.registerBubble(
+                "Trophies",
+                "assets/trophy.svg",
+                "#000000",
+                "#c8b10d"
+            );
+            this.registerBubble("Settings", "assets/wrench.svg", "#ffffff");
             this._storageService.save(serviceKey, this._bubblePages);
         } else {
             this._bubblePages = bubblePages;
@@ -30,7 +35,8 @@ export class BubbleService implements bubble_service.BubbleService {
     public registerBubble(
         title: string,
         icon: string,
-        background: string
+        background: string,
+        colorize = "transparent"
     ): void {
         // skip if page bubble already registered.
         if (
@@ -65,7 +71,15 @@ export class BubbleService implements bubble_service.BubbleService {
                     ) === undefined
                 ) {
                     this._bubblePages[pageIndex].push(
-                        new Bubble(title, r, c, false, icon, background)
+                        new Bubble(
+                            title,
+                            r,
+                            c,
+                            false,
+                            icon,
+                            background,
+                            colorize
+                        )
                     );
                     return;
                 }

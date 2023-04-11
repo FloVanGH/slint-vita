@@ -12,6 +12,7 @@ component BubbleItem {
     in property <bool> selected <=> i-state-area.has-focus;
     in property <bool> filler;
     in property <brush> background <=> i-container.background;
+    in property <brush> colorize <=> i-image.colorize;
 
     width: Theme.sizes.bubble;
     height: Theme.sizes.bubble;
@@ -66,6 +67,7 @@ export struct Bubble {
     filler: bool,
     selected: bool,
     background: brush,
+    colorize: brush,
 }
 
 export struct BubblePage {
@@ -97,6 +99,7 @@ export component BubblePageItem {
         filler: bubble.filler;
         selected: bubble.selected;
         background: bubble.background;
+        colorize: bubble.colorize;
 
         clicked => {
             if(self.filler) {
