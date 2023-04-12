@@ -368,10 +368,7 @@ export class LauncherController {
     };
 
     openApp = (key: string): void => {
-        if (key === view.trophies) {
-            this._mainWindow.launcher_show_list =
-                this._navigationService.show(key);
-        }
+        this._mainWindow.launcher_show_list = this._navigationService.show(key);
     };
 
     closeList = (): void => {

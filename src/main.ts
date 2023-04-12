@@ -15,6 +15,7 @@ import { StorageService } from "./services/storage_service";
 import { NotificationService } from "./services/notification_service";
 import { NotificationMessage } from "./data/notification";
 import { NotificationController } from "./controllers/notification_controller";
+import { SettingsService } from "./services/setttings_service";
 
 const mainWindow = new MainWindow();
 const storageService = new StorageService();
@@ -35,21 +36,36 @@ const trophiesController = new ListController(
     new TrophyService(process.env.PSN),
     mainWindow
 );
+const settingsController = new ListController(
+    new SettingsService(),
+    mainWindow
+);
 
 navigationService.registerListController(view.trophies, trophiesController);
+navigationService.registerListController(view.settings, settingsController);
 
 appBarController.init();
 launcherController.init();
 notificationController.init();
-
-trophiesController
+settingsController
     .init()
     .then(() => {
-        mainWindow.run();
+        trophiesController
+            .init()
+            .then(() => {
+                mainWindow.run();
+            })
+            .catch((error) => {
+                notificationService.add(
+                    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+                    new NotificationMessage("Trophies: " + error)
+                );
+                mainWindow.run();
+            });
     })
     .catch((error) => {
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-        notificationService.add(new NotificationMessage("Trophies: " + error));
+        notificationService.add(new NotificationMessage("Settings: " + error));
         mainWindow.run();
     });
 
